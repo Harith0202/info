@@ -278,7 +278,7 @@ function generateToken(userData) {
   const token = jwt.sign(
     userData,
     'mypassword',
-    { expiresIn: 60 }
+    { expiresIn: 600 }
   );
 
   console.log(token);

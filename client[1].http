@@ -35,8 +35,7 @@ Content-Type: application/json
 }
 ###User create visitor 
 POST http://localhost:3000/create/visitor/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTY4NjkyMTQ3NSwiZXhwIjoxNjg2OTIxNTM1fQ.LVYj8AnlGPDlatG5-icMpB92T9hOp3yuHXf73MBe5Ts
-Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTcwMzUwMTcyMCwiZXhwIjoxNzAzNTAxNzgwfQ.sOIwQcn8CLaSRmI9hbr272bADwy-_GuAAf6Mic4flKM
 
 {
     "visitorname": "KIEW",
@@ -50,7 +49,7 @@ Content-Type: application/json
 }
 ###user view all visitors data that had created by that him (login user)
 GET http://localhost:3000/view/visitor/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTY4NjkyMjA5NywiZXhwIjoxNjg2OTIyMTU3fQ.xWJuQtppTRzGPjcBzYy4LsQ_lD68DN2ovQsI_4YdJiM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTcwMzUwMDYxOSwiZXhwIjoxNzAzNTAwNjc5fQ.s5NTsjdIQ1fJvJYrTAp9qMjc8MIdVuwODCXSbY7Ailw
 ###user delete its visitor (by given visitorname) 
 DELETE http://localhost:3000/delete/visitor/JOHN
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTY4NjkyMjIwMSwiZXhwIjoxNjg2OTIyMjYxfQ.D6hv7XSwntFBlwk5fH9s8EVRsPJ7ctQSaQYaptkXdTk
