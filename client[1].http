@@ -1,0 +1,74 @@
+###Security UI
+###Security login
+POST http://localhost:3000/login/security
+Content-Type: application/json
+
+{
+    "username":"Soo",
+    "password":"123456"
+}
+###security register user account
+POST http://localhost:3000/register/user 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvbyIsImlhdCI6MTY4NjkxOTg1MSwiZXhwIjoxNjg2OTE5OTExfQ.gnY3CPmZm24TvLdO-cHyz7EHOXLauukTiGIPi1D1kic
+Content-Type: application/json
+
+{
+    "username":"HARITH",
+    "password":"123456",
+    "name":"HARIH ROSTLY",
+    "email":"harithrostly@mail.com"
+}
+###security view all the visitor data
+GET http://localhost:3000/view/visitor/security
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvbyIsImlhdCI6MTY4NjkyMDIwNywiZXhwIjoxNjg2OTIwMjY3fQ.VuZbD6GoFQlQA_b4ARxmps3uDx4aHRCKnrI0vGIc4iU
+###security delete the user by insert the username
+DELETE http://localhost:3000/delete/user/JOHN
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvbyIsImlhdCI6MTY4NjkyMDkwNiwiZXhwIjoxNjg2OTIwOTY2fQ.TI09kRL9KseeaRcp83PftrOSLMi27MFO-zRsy8O2Bwo
+### User UI
+###User login 
+POST http://localhost:3000/login/user
+Content-Type: application/json
+
+{
+    "username":"SAM",
+    "password":"123456"
+}
+###User create visitor 
+POST http://localhost:3000/create/visitor/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTY4NjkyMTQ3NSwiZXhwIjoxNjg2OTIxNTM1fQ.LVYj8AnlGPDlatG5-icMpB92T9hOp3yuHXf73MBe5Ts
+Content-Type: application/json
+
+{
+    "visitorname": "KIEW",
+    "checkintime": "2001-06-24T09:34:55Z",
+    "checkouttime":"2001-06-24T13:23:50Z",    
+    "temperature":"27.5",
+    "gender":"male",
+    "ethnicity":"buddha",
+    "age":"22",
+    "phonenumber":"013247547"
+}
+###user view all visitors data that had created by that him (login user)
+GET http://localhost:3000/view/visitor/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTY4NjkyMjA5NywiZXhwIjoxNjg2OTIyMTU3fQ.xWJuQtppTRzGPjcBzYy4LsQ_lD68DN2ovQsI_4YdJiM
+###user delete its visitor (by given visitorname) 
+DELETE http://localhost:3000/delete/visitor/JOHN
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTY4NjkyMjIwMSwiZXhwIjoxNjg2OTIyMjYxfQ.D6hv7XSwntFBlwk5fH9s8EVRsPJ7ctQSaQYaptkXdTk
+###User update their visitor info
+PUT http://localhost:3000/update/visitor/Celine
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTY4NjkyMjU4OSwiZXhwIjoxNjg2OTIyNjQ5fQ.nAJXns8tTq4JvJYtroU-4LtE3_D-iH-Qda5MmgvXiPM
+
+{
+    "checkintime": "2002-06-23T06:30:55Z",
+    "checkouttime":"2002-06-27T06:50:50Z",    
+    "temperature":"26.9",
+    "gender":"female",
+    "ethnicity":"Kirstian",
+    "age":"26",
+    "phonenumber":"012345678"
+}
+
+### Visitor UI
+###Visitor view their data
+GET http://localhost:3000/view/visitor/JOHN
