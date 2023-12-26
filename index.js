@@ -1,6 +1,35 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
+// Your existing code...
+
+// Swagger JSDoc options
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Your API',
+      version: '1.0.0',
+      description: 'API documentation for Your Express.js API',
+    },
+    servers: [
+      {
+        url: `http://localhost:${port}`,
+        description: 'Development server',
+      },
+    ],
+  },
+  apis: [__filename], // Specify the file containing your JSDoc comments
+};
+
+// Initialize Swagger JSDoc
+const swaggerSpec = swaggerJsdoc(options);
+
+// Serve Swagger UI at /api-docs endpoint
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://harith:Harith123@cluster0.iezu3ww.mongodb.net/?retryWrites=true&w=majority";
@@ -64,39 +93,6 @@ app.get('/view/visitor/security', verifyToken, async (req, res) => {
   }
 });
 
-/// security have kuasa to delete the user account after delete the user account all the visitor created by particular user also will delete
-app.delete('/delete/user/:username', verifyToken, async (req, res) => {
-  const username = req.params.username;
-
-  try {
-    // Delete the user
-    const deleteUserResult = await client
-      .db('benr2423')
-      .collection('users')
-      .deleteOne({ username });
-
-    if (deleteUserResult.deletedCount === 0) {
-      return res.status(404).send('User not found');
-    }
-
-    // Delete the user's documents
-    const deleteDocumentsResult = await client
-      .db('benr2423')
-      .collection('documents')
-      .deleteMany({ username });
-
-    // Delete the visitors created by the user
-    const deleteVisitorsResult = await client
-      .db('benr2423')
-      .collection('visitor')
-      .deleteMany({ createdBy: username });
-
-    res.send('User and associated data deleted successfully');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
-});
 
 //user login account 
 app.post('/login/user', (req, res) => {
@@ -150,28 +146,7 @@ app.get('/view/visitor/user', verifyToken, async (req, res) => {
   }
 });
 
-/// user delete its visitor
-app.delete('/delete/visitor/:visitorname', verifyToken, async (req, res) => {
-  const visitorname = req.params.visitorname;
-  const username = req.user.username; // Assuming the username is available in the req.user object
 
-  try {
-    // Find the visitor by visitorname and createdBy field to ensure the visitor belongs to the user
-    const deleteVisitorResult = await client
-      .db('benr2423')
-      .collection('visitor')
-      .deleteOne({ visitorname: visitorname, createdBy: username });
-
-    if (deleteVisitorResult.deletedCount === 0) {
-      return res.status(404).send('Visitor not found or unauthorized');
-    }
-
-    res.send('Visitor deleted successfully');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
-});
 /// user update its visitor info
 app.put('/update/visitor/:visitorname', verifyToken, async (req, res) => {
   const visitorname = req.params.visitorname;
@@ -271,6 +246,237 @@ function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemper
   });
   return "visitor created";
 }
+/**
+ * @swagger
+ * tags:
+ *   name: User Management
+ *   description: API endpoints for user management
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Security
+ *   description: API endpoints for security operations
+ */
+
+/**
+ * @swagger
+ * /register/user:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [User Management]
+ *     requestBody:
+ *       description: User information
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Account created successfully
+ */
+
+/**
+ * @swagger
+ * /login/security:
+ *   post:
+ *     summary: Login for security account
+ *     tags: [Security]
+ *     requestBody:
+ *       description: Security login credentials
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ */
+/**
+ * @swagger
+ * /view/visitor/security:
+ *   get:
+ *     summary: View all visitors (Security)
+ *     tags: [Security]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: List of visitors
+ */
+/**
+ * @swagger
+ * /login/user:
+ *   post:
+ *     summary: User login account
+ *     tags: [User Management]
+ *     requestBody:
+ *       description: User login credentials
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ */
+
+/**
+ * @swagger
+ * /create/visitor/user:
+ *   post:
+ *     summary: Create a visitor (User)
+ *     tags: [User Management]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       description: Visitor information
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               visitorname:
+ *                 type: string
+ *               checkintime:
+ *                 type: string
+ *               checkouttime:
+ *                 type: string
+ *               temperature:
+ *                 type: number
+ *               gender:
+ *                 type: string
+ *               ethnicity:
+ *                 type: string
+ *               age:
+ *                 type: number
+ *               phonenumber:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Visitor created successfully
+ */
+/**
+ * @swagger
+ * /view/visitor/user:
+ *   get:
+ *     summary: View visitors created by a particular user
+ *     tags: [User Management]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: List of visitors created by the authenticated user
+ *       '500':
+ *         description: Internal Server Error
+ */
+/**
+ * @swagger
+ * /update/visitor/{visitorname}:
+ *   put:
+ *     summary: Update visitor information (User)
+ *     tags: [User Management]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: visitorname
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       description: Updated visitor information
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               checkintime:
+ *                 type: string
+ *               checkouttime:
+ *                 type: string
+ *               temperature:
+ *                 type: number
+ *               gender:
+ *                 type: string
+ *               ethnicity:
+ *                 type: string
+ *               age:
+ *                 type: number
+ *               phonenumber:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Visitor updated successfully
+ *       '404':
+ *         description: Visitor not found or unauthorized
+ *       '500':
+ *         description: Internal Server Error
+ */
+/**
+ * @swagger
+ * /view/visitor/{visitorName}:
+ *   get:
+ *     summary: View visitor data by name
+ *     tags: [Visitor]
+ *     parameters:
+ *       - in: path
+ *         name: visitorName
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Visitor data retrieved successfully
+ *       '404':
+ *         description: Visitor not found
+ *       '500':
+ *         description: Internal Server Error
+ */
+
 
 const jwt = require('jsonwebtoken');
 

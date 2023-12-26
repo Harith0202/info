@@ -9,28 +9,26 @@ Content-Type: application/json
 }
 ###security register user account
 POST http://localhost:3000/register/user 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvbyIsImlhdCI6MTY4NjkxOTg1MSwiZXhwIjoxNjg2OTE5OTExfQ.gnY3CPmZm24TvLdO-cHyz7EHOXLauukTiGIPi1D1kic
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvbyIsImlhdCI6MTcwMzUyNTg2NCwiZXhwIjoxNzAzNTI2NDY0fQ.lQkJyqhYcK5lmsbAtP-1aixQJW8h9bbcMleqcQBpcug
 Content-Type: application/json
 
 {
-    "username":"HARITH",
+    "username":"ANEP",
     "password":"123456",
-    "name":"HARIH ROSTLY",
-    "email":"harithrostly@mail.com"
+    "name":"HARIH ROSLY",
+    "email":"harithrosly@mail.com"
 }
 ###security view all the visitor data
 GET http://localhost:3000/view/visitor/security
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvbyIsImlhdCI6MTY4NjkyMDIwNywiZXhwIjoxNjg2OTIwMjY3fQ.VuZbD6GoFQlQA_b4ARxmps3uDx4aHRCKnrI0vGIc4iU
-###security delete the user by insert the username
-DELETE http://localhost:3000/delete/user/JOHN
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvbyIsImlhdCI6MTY4NjkyMDkwNiwiZXhwIjoxNjg2OTIwOTY2fQ.TI09kRL9KseeaRcp83PftrOSLMi27MFO-zRsy8O2Bwo
+
 ### User UI
 ###User login 
 POST http://localhost:3000/login/user
 Content-Type: application/json
 
 {
-    "username":"SAM",
+    "username":"HARITH",
     "password":"123456"
 }
 ###User create visitor 
@@ -50,9 +48,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBT
 ###user view all visitors data that had created by that him (login user)
 GET http://localhost:3000/view/visitor/user
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTcwMzUwMDYxOSwiZXhwIjoxNzAzNTAwNjc5fQ.s5NTsjdIQ1fJvJYrTAp9qMjc8MIdVuwODCXSbY7Ailw
-###user delete its visitor (by given visitorname) 
-DELETE http://localhost:3000/delete/visitor/JOHN
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTY4NjkyMjIwMSwiZXhwIjoxNjg2OTIyMjYxfQ.D6hv7XSwntFBlwk5fH9s8EVRsPJ7ctQSaQYaptkXdTk
+
 ###User update their visitor info
 PUT http://localhost:3000/update/visitor/Celine
 Content-Type: application/json
