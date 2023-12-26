@@ -3,7 +3,10 @@ const app = express();
 const port = 3000;
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const MongoURI = process.env.MONGODB_URI
+
+require('dotenv').config();
+const MongoURI = process.env.MONGODB_URI;
+
 
 // Your existing code...
 
