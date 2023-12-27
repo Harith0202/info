@@ -5,7 +5,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const port = process.env.PORT || 3000;
 
-require('dotenv').config();
+
 const MongoURI = process.env.MONGODB_URI;
 
 
@@ -514,3 +514,13 @@ function verifyToken(req, res, next) {
     next();
   });
 }
+
+fetch('https://example.com/api/data', {
+  method: 'GET',
+  mode: 'cors',
+  credentials: 'same-origin', // or 'include' if needed
+  headers: {
+    'Content-Type': 'application/json',
+    // Other headers as needed
+  },
+})
