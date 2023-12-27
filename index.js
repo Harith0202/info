@@ -64,7 +64,7 @@ app.use(express.json());
 // Security register the user account
 app.post('/register/user', verifyToken, async (req, res) => {
   try {
-    let result = await register(
+    let result = register(
       req.body.username,
       req.body.password,
       req.body.name,
