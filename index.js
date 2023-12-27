@@ -60,17 +60,28 @@ client.connect().then(res => {
 });
 
 app.use(express.json());
-//security register the user account
-app.post('/register/user',verifyToken, async (req, res) => {
-  let result = register(
-    req.body.username,
-    req.body.password,
-    req.body.name,
-    req.body.email,
-  );
 
-  res.send(result);
+// Security register the user account
+app.post('/register/user', verifyToken, async (req, res) => {
+  try {
+    let result = await register(
+      req.body.username,
+      req.body.password,
+      req.body.name,
+      req.body.email,
+    );
+    // Assuming the register function returns an object with a 'success' property.
+    if (result.success) {
+      res.status(201).send(result); // 201 Created
+    } else {
+      res.status(400).send(result); // 400 Bad Request or another appropriate error code
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error"); // 500 Internal Server Error
+  }
 });
+
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
 app.post('/login/security', (req, res) => {
