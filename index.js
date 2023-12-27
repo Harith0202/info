@@ -249,6 +249,40 @@ function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemper
   });
   return "visitor created";
 }
+
+const jwt = require('jsonwebtoken');
+
+function generateToken(userData) {
+  const token = jwt.sign(
+    userData,
+    'mypassword',
+    { expiresIn: 600 }
+  );
+
+  console.log(token);
+  return token;
+}
+
+function verifyToken(req, res, next) {
+  let header = req.headers.authorization;
+  if (!header) {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+
+  let token = header.split(' ')[1];
+
+  jwt.verify(token, 'mypassword', function (err, decoded) {
+    if (err) {
+      res.status(401).send('Unauthorized');
+      return;
+    }
+    req.user = decoded;
+    next();
+  });
+}
+
+
 /**
  * @swagger
  * tags:
@@ -480,36 +514,4 @@ function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemper
  *         description: Internal Server Error
  */
 
-
-const jwt = require('jsonwebtoken');
-
-function generateToken(userData) {
-  const token = jwt.sign(
-    userData,
-    'mypassword',
-    { expiresIn: 600 }
-  );
-
-  console.log(token);
-  return token;
-}
-
-function verifyToken(req, res, next) {
-  let header = req.headers.authorization;
-  if (!header) {
-    res.status(401).send('Unauthorized');
-    return;
-  }
-
-  let token = header.split(' ')[1];
-
-  jwt.verify(token, 'mypassword', function (err, decoded) {
-    if (err) {
-      res.status(401).send('Unauthorized');
-      return;
-    }
-    req.user = decoded;
-    next();
-  });
-}
 
