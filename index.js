@@ -22,7 +22,7 @@ const options = {
     },
     servers: [
       {
-        url: `http://localhost:${port}`,
+        url: `https://vmstadak.azurewebsites.net`,
         description: 'Development server',
       },
     ],
