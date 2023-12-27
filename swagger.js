@@ -45,8 +45,6 @@
  *     responses:
  *       201:
  *         description: User registered successfully.
- *       400:
- *         description: Bad request.
  *       401:
  *         description: Unauthorized. # If the user is not authorized to access this endpoint
  */
