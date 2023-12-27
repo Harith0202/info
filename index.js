@@ -62,37 +62,44 @@ client.connect().then(res => {
 app.use(express.json());
 
 app.post('/register/user', verifyToken, async (req, res) => {
-  // Validate the request body first
-  if (!req.body.username || !req.body.password || !req.body.name || !req.body.email) {
-    return res.status(400).send({ message: "Missing required fields" });
-  }
-
+  // Start a database transaction
+  const transaction = await database.startTransaction();
+  
   try {
-    // Process the registration
+    // Perform all your checks here before saving the user
+    if (someCheckFails) {
+      throw new Error("Some check failed");
+    }
+
+    // If all checks pass, proceed to register the user
     let result = await register(
       req.body.username,
       req.body.password,
       req.body.name,
-      req.body.email
+      req.body.email,
+      transaction // Pass the transaction along
     );
 
-    // Check the result of the registration
-    if (result.success) {
-      // If successful, send a 201 Created response
-      res.status(201).send({ message: "User registered successfully" });
-    } else {
-      // If registration failed due to business logic, send a meaningful error message
-      res.status(400).send({ message: result.message });
-    }
+    // If the register function is successful, commit the transaction
+    await transaction.commit();
+
+    // Send a 201 response indicating success
+    res.status(201).send(result);
   } catch (error) {
-    // If an unexpected error occurred, log it and send a 500 Internal Server Error response
-    console.error('Registration error:', error);
-    res.status(500).send({ message: "Internal Server Error" });
+    // If there's an error, roll back the transaction
+    await transaction.rollback();
+
+    // Log the error for debugging purposes
+    console.error(error);
+
+    // Send an appropriate error response
+    if (error.message === "Some check failed") {
+      res.status(400).send({ message: error.message });
+    } else {
+      res.status(500).send({ message: "Internal Server Error" });
+    }
   }
 });
-
-
-
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
 app.post('/login/security', (req, res) => {

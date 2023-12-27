@@ -46,12 +46,13 @@
  *       201:
  *         description: User registered successfully.
  *       400:
- *         description: Bad request. The request was unacceptable, often due to missing a required parameter or invalid data.
+ *         description: Bad request. The request was malformed or validation failed.
  *       401:
- *         description: Unauthorized. If the user is not authorized to access this endpoint.
+ *         description: Unauthorized. The user is not authorized to access this endpoint.
  *       500:
  *         description: Internal Server Error. A generic error occurred on the server.
  */
+
 
 /**
  * @swagger
