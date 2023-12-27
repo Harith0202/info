@@ -16,15 +16,21 @@
  * @swagger
  * /register/user:
  *   post:
+ *     security:
+ *       - BearerAuth: []
  *     summary: Register a new user
- *     tags: [User Management]
+ *     description: Register a new user with provided details.
  *     requestBody:
- *       description: User information
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *               - name
+ *               - email
  *             properties:
  *               username:
  *                 type: string
@@ -35,10 +41,11 @@
  *               email:
  *                 type: string
  *     responses:
- *       '200':
- *         description: Account created successfully
+ *       200:
+ *         description: User registered successfully.
+ *       401:
+ *         description: Unauthorized
  */
-
 /**
  * @swagger
  * /login/security:
