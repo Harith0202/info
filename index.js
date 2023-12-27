@@ -513,5 +513,49 @@ function verifyToken(req, res, next) {
  *       '500':
  *         description: Internal Server Error
  */
+/**
+ * @swagger
+ * tags:
+ *   name: Token
+ *   description: Token-related operations
+ */
 
+/**
+ * @swagger
+ * /generateToken:
+ *   post:
+ *     summary: Generate a token
+ *     tags: [Token]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userData:
+ *                 type: object
+ *     responses:
+ *       200:
+ *         description: Token generated successfully
+ */
+app.post('/generateToken', (req, res) => {
+  const userData = req.body.userData;
+  const token = generateToken(userData);
+  res.send(token);
+});
+
+/**
+ * @swagger
+ * /verifyToken:
+ *   get:
+ *     summary: Verify a token
+ *     tags: [Token]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Token verified successfully
+ *       401:
+ *         description: Unauthorized
+ */
 
