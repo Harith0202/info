@@ -61,29 +61,34 @@ client.connect().then(res => {
 
 app.use(express.json());
 
-// Security register the user account
 app.post('/register/user', verifyToken, async (req, res) => {
   try {
+    // Log the request body to ensure it has the necessary fields
+    console.log('Request body:', req.body);
 
-console.log(req.security);
+    // Call the register function with destructured request body
+    let result = register(req.body.username, req.body.password, req.body.name, req.body.email);
 
-    let result = register(
-      req.body.username,
-      req.body.password,
-      req.body.name,
-      req.body.email,
-    );
-    // Assuming the register function returns an object with a 'success' property.
+    // Log the result to inspect what is being returned
+    console.log('Registration result:', result);
+
+    // Check if the result has a 'success' property that is true
     if (result.success) {
-      res.status(201).send(result); // 201 Created
+      // If successful, send a 201 Created response with the result
+      res.status(201).send(result);
     } else {
-      return res.status(400).send(result);
+      // If the result object does not contain 'success', consider it a failure
+      // Also, provide a message property from the result if available
+      res.status(400).send({ message: result.message || "Registration failed." });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error"); // 500 Internal Server Error
+    // Log the error to the console
+    console.error('Registration error:', error);
+    // Send a 500 Internal Server Error response with the error message
+    res.status(500).send({ message: "Internal Server Error", error: error.message });
   }
 });
+
 
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do

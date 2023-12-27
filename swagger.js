@@ -46,10 +46,13 @@
  *       201:
  *         description: User registered successfully.
  *       400:
- *         description: User registered successfully.
+ *         description: Bad request. The request was unacceptable, often due to missing a required parameter or invalid data.
  *       401:
- *         description: Unauthorized. # If the user is not authorized to access this endpoint
+ *         description: Unauthorized. If the user is not authorized to access this endpoint.
+ *       500:
+ *         description: Internal Server Error. A generic error occurred on the server.
  */
+
 /**
  * @swagger
  * /login/security:
