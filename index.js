@@ -330,7 +330,7 @@ function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemper
  *     summary: View all visitors (Security)
  *     tags: [Security]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: List of visitors
@@ -374,7 +374,7 @@ function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemper
  *     summary: Create a visitor (User)
  *     tags: [User Management]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       description: Visitor information
  *       required: true
@@ -410,7 +410,7 @@ function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemper
  *     summary: View visitors created by a particular user
  *     tags: [User Management]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: List of visitors created by the authenticated user
@@ -424,7 +424,7 @@ function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemper
  *     summary: Update visitor information (User)
  *     tags: [User Management]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: visitorname
