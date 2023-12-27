@@ -24,15 +24,24 @@ const options = {
         description: 'Development server',
       },
     ],
+    components: {
+      securitySchemes: {
+        BearerAuth: { // This name must match the key name in the security array below
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT', // Optional, if you expect a JWT token
+        },
+      },
+    },
   },
   security: [
     {
       BearerAuth: [],
     },
   ],
-
   apis: ['./swagger.js'], // Specify the file containing your JSDoc comments
 };
+
 
 // Initialize Swagger JSDoc
 const swaggerSpec = swaggerJsdoc(options);
