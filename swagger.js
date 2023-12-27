@@ -16,12 +16,10 @@
  * @swagger
  * /register/user:
  *   post:
- *     summary: Register a new user
- *     description: This endpoint is for creating a new user account.
- *     tags:
- *       - User Management
  *     security:
- *       - BearerAuth: [] # Applies the BearerAuth security to the route
+ *       - BearerAuth: []
+ *     summary: Register a new user
+ *     description: Register a new user with provided details.
  *     requestBody:
  *       required: true
  *       content:
@@ -43,12 +41,10 @@
  *               email:
  *                 type: string
  *     responses:
- *       201:
+ *       200:
  *         description: User registered successfully.
- *       400:
- *         description: Bad request.
  *       401:
- *         description: Unauthorized. # If the user is not authorized to access this endpoint
+ *         description: Unauthorized
  */
 /**
  * @swagger
