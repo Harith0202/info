@@ -77,7 +77,7 @@
  *     summary: View all visitors (Security)
  *     tags: [Security]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
  *       '200':
  *         description: List of visitors
@@ -121,7 +121,7 @@
  *     summary: Create a visitor (User)
  *     tags: [User Management]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       description: Visitor information
  *       required: true
@@ -157,7 +157,7 @@
  *     summary: View visitors created by a particular user
  *     tags: [User Management]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
  *       '200':
  *         description: List of visitors created by the authenticated user
@@ -171,7 +171,7 @@
  *     summary: Update visitor information (User)
  *     tags: [User Management]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: visitorname
@@ -227,47 +227,4 @@
  *         description: Visitor not found
  *       '500':
  *         description: Internal Server Error
- */
-/**
- * @swagger
- * /generate/token:
- *   post:
- *     summary: Generate a JWT token
- *     tags: [Authentication]
- *     requestBody:
- *       description: User credentials for token generation
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       '200':
- *         description: JWT token generated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- */
-/**
- * @swagger
- * /verify/token:
- *   get:
- *     summary: Verify user token
- *     tags: [Authentication]
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       '200':
- *         description: Token is valid
- *       '401':
- *         description: Unauthorized - Token is invalid or expired
  */
