@@ -31,7 +31,7 @@ const options = {
     },
   ],
 
-  apis: [__filename], // Specify the file containing your JSDoc comments
+  apis: ['./swagger.js'], // Specify the file containing your JSDoc comments
 };
 
 // Initialize Swagger JSDoc
