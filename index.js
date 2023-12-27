@@ -521,47 +521,44 @@ function verifyToken(req, res, next) {
  */
 /**
  * @swagger
- * tags:
- *   name: Token
- *   description: Token-related operations
- */
-
-/**
- * @swagger
- * /generateToken:
+ * /generate/token:
  *   post:
- *     summary: Generate a token
- *     tags: [Token]
+ *     summary: Generate a JWT token
+ *     tags: [Authentication]
  *     requestBody:
+ *       description: User credentials for token generation
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               userData:
- *                 type: object
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
  *     responses:
- *       200:
- *         description: Token generated successfully
+ *       '200':
+ *         description: JWT token generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
  */
-app.post('/generateToken', (req, res) => {
-  const userData = req.body.userData;
-  const token = generateToken(userData);
-  res.send(token);
-});
-
 /**
  * @swagger
- * /verifyToken:
+ * /verify/token:
  *   get:
- *     summary: Verify a token
- *     tags: [Token]
+ *     summary: Verify user token
+ *     tags: [Authentication]
  *     security:
  *       - BearerAuth: []
  *     responses:
- *       200:
- *         description: Token verified successfully
- *       401:
- *         description: Unauthorized
+ *       '200':
+ *         description: Token is valid
+ *       '401':
+ *         description: Unauthorized - Token is invalid or expired
  */
-
