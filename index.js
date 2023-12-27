@@ -14,39 +14,34 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Your API',
+      title: 'hotel visitor management API',
       version: '1.0.0',
       description: 'API documentation for Your Express.js API',
     },
     servers: [
       {
-        url: `https://vmstadak.azurewebsites.net`,
+        url: 'https://vmstadak.azurewebsites.net',
         description: 'Development server',
       },
     ],
     components: {
       securitySchemes: {
-        BearerAuth: { // This name must match the key name in the security array below
+        BearerAuth: {
           type: 'http',
           scheme: 'bearer',
-          bearerFormat: 'JWT', // Optional, if you expect a JWT token
+          bearerFormat: 'JWT',
         },
       },
     },
   },
-  security: [
-    {
-      BearerAuth: [],
-    },
-  ],
-  apis: ['./swagger.js'], // Specify the file containing your JSDoc comments
+  security: [{
+    BearerAuth: [],
+  }],
+  apis: ['./swagger.js'],
 };
 
-
-// Initialize Swagger JSDoc
 const swaggerSpec = swaggerJsdoc(options);
 
-// Serve Swagger UI at /api-docs endpoint
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
