@@ -76,6 +76,8 @@ console.log(req.security);
     // Assuming the register function returns an object with a 'success' property.
     if (result.success) {
       res.status(201).send(result); // 201 Created
+    } else {
+      return res.status(400).send(result);
     }
   } catch (error) {
     console.error(error);
