@@ -9,8 +9,6 @@ const port = process.env.PORT || 3000;
 const MongoURI = process.env.MONGODB_URI;
 
 
-// Your existing code...
-
 // Swagger JSDoc options
 const options = {
   definition: {
@@ -515,12 +513,3 @@ function verifyToken(req, res, next) {
   });
 }
 
-fetch('https://example.com/api/data', {
-  method: 'GET',
-  mode: 'cors',
-  credentials: 'same-origin', // or 'include' if needed
-  headers: {
-    'Content-Type': 'application/json',
-    // Other headers as needed
-  },
-})
