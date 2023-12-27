@@ -62,32 +62,35 @@ client.connect().then(res => {
 app.use(express.json());
 
 app.post('/register/user', verifyToken, async (req, res) => {
+  // Validate the request body first
+  if (!req.body.username || !req.body.password || !req.body.name || !req.body.email) {
+    return res.status(400).send({ message: "Missing required fields" });
+  }
+
   try {
-    // Log the request body to ensure it has the necessary fields
-    console.log('Request body:', req.body);
+    // Process the registration
+    let result = await register(
+      req.body.username,
+      req.body.password,
+      req.body.name,
+      req.body.email
+    );
 
-    // Call the register function with destructured request body
-    let result = register(req.body.username, req.body.password, req.body.name, req.body.email);
-
-    // Log the result to inspect what is being returned
-    console.log('Registration result:', result);
-
-    // Check if the result has a 'success' property that is true
+    // Check the result of the registration
     if (result.success) {
-      // If successful, send a 201 Created response with the result
-      res.status(201).send(result);
+      // If successful, send a 201 Created response
+      res.status(201).send({ message: "User registered successfully" });
     } else {
-      // If the result object does not contain 'success', consider it a failure
-      // Also, provide a message property from the result if available
-      res.status(400).send({ message: result.message || "Registration failed." });
+      // If registration failed due to business logic, send a meaningful error message
+      res.status(400).send({ message: result.message });
     }
   } catch (error) {
-    // Log the error to the console
+    // If an unexpected error occurred, log it and send a 500 Internal Server Error response
     console.error('Registration error:', error);
-    // Send a 500 Internal Server Error response with the error message
-    res.status(500).send({ message: "Internal Server Error", error: error.message });
+    res.status(500).send({ message: "Internal Server Error" });
   }
 });
+
 
 
 
