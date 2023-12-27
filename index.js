@@ -25,6 +25,12 @@ const options = {
       },
     ],
   },
+  security: [
+    {
+      BearerAuth: [],
+    },
+  ],
+
   apis: [__filename], // Specify the file containing your JSDoc comments
 };
 
