@@ -86,9 +86,7 @@ app.post('/register/user', async (req, res) => {
       // If you want to suppress the 500 error message, you can change the status code and message here.
       // Again, not recommended as it hides the error from the user.
       res.status(200).send({
-        success: false,
-        message: "The operation completed with warnings, an error occurred.",
-        error: error.message // Including the error message is useful for debugging.
+        result: result // You can choose to send back the original result or not.
       });
     }
   });
