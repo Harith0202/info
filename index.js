@@ -62,44 +62,41 @@ client.connect().then(res => {
 app.use(express.json());
 
 app.post('/register/user', verifyToken, async (req, res) => {
-  // Start a database transaction
-  const transaction = await database.startTransaction();
-  
   try {
-    // Perform all your checks here before saving the user
-    if (someCheckFails) {
-      throw new Error("Some check failed");
-    }
+    console.log(req.security);
 
-    // If all checks pass, proceed to register the user
-    let result = await register(
+    let result = register(
       req.body.username,
       req.body.password,
       req.body.name,
       req.body.email,
-      transaction // Pass the transaction along
     );
 
-    // If the register function is successful, commit the transaction
-    await transaction.commit();
-
-    // Send a 201 response indicating success
-    res.status(201).send(result);
-  } catch (error) {
-    // If there's an error, roll back the transaction
-    await transaction.rollback();
-
-    // Log the error for debugging purposes
-    console.error(error);
-
-    // Send an appropriate error response
-    if (error.message === "Some check failed") {
-      res.status(400).send({ message: error.message });
+    // Assuming the register function returns an object with a 'success' property.
+    if (result.success) {
+      res.status(201).send(result); // 201 Created
     } else {
-      res.status(500).send({ message: "Internal Server Error" });
+      // Here we're changing the response for a registration failure
+      // that normally would send a 400 status.
+      // This should be a temporary fix.
+      res.status(200).send({
+        success: false,
+        message: "The operation completed with warnings, user not created.",
+        result: result // You can choose to send back the original result or not.
+      });
     }
+  } catch (error) {
+    console.error(error);
+    // If you want to suppress the 500 error message, you can change the status code and message here.
+    // Again, not recommended as it hides the error from the user.
+    res.status(200).send({
+      success: false,
+      message: "The operation completed with warnings, an error occurred.",
+      error: error.message // Including the error message is useful for debugging.
+    });
   }
 });
+
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
 app.post('/login/security', (req, res) => {
