@@ -20,6 +20,8 @@
  *       - User Management
  *     summary: Register a new user
  *     description: This endpoint is for creating a new user account.
+ *     security:
+ *       - BearerAuth: [] 
  *     requestBody:
  *       required: true
  *       content:
