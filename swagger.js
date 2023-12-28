@@ -20,8 +20,6 @@
  *     description: This endpoint is for creating a new user account.
  *     tags:
  *       - User Management
- *     security:
- *       - BearerAuth: [] # Applies the BearerAuth security to the route
  *     requestBody:
  *       required: true
  *       content:
@@ -47,11 +45,10 @@
  *         description: User registered successfully.
  *       400:
  *         description: Bad request. The server could not understand the request due to invalid syntax.
- *       401:
- *         description: Unauthorized. The user is not authorized to access this endpoint.
  *       500:
  *         description: Internal Server Error. A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
  */
+
 
 /**
  * @swagger
