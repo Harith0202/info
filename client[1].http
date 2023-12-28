@@ -9,32 +9,36 @@ Content-Type: application/json
 }
 ###security register user account
 POST http://localhost:3000/register/user 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhBUklUSCIsImlhdCI6MTcwMzc4MDg2NywiZXhwIjoxNzAzNzgxNDY3fQ.VZETkqG0Hd4hClLpQNIN6FYh3dYYwDSfb-ibbRH9v2g
+Content-Type: application/json
 
 {
-    "username":"ANEP",
+    "username":"HARITH",
     "password":"123456",
     "name":"HARIH ROSLY",
     "email":"harithrosly@mail.com"
 }
-
 ###security view all the visitor data
 GET http://localhost:3000/view/visitor/security
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhBUklUSCIsImlhdCI6MTcwMzc3MzA5MCwiZXhwIjoxNzAzNzczNjkwfQ.R1WWlQHt3k-FZcCTCq8lbyMRg0vNqFE4wDzBJJrRpgY
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvbyIsImlhdCI6MTY4NjkyMDIwNywiZXhwIjoxNjg2OTIwMjY3fQ.VuZbD6GoFQlQA_b4ARxmps3uDx4aHRCKnrI0vGIc4iU
+###security delete the user by insert the username
+DELETE http://localhost:3000/delete/user/ANEP
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvbyIsImlhdCI6MTcwMzUyNTg2NCwiZXhwIjoxNzAzNTI2NDY0fQ.lQkJyqhYcK5lmsbAtP-1aixQJW8h9bbcMleqcQBpcug
 ### User UI
 ###User login 
 POST http://localhost:3000/login/user
 Content-Type: application/json
 
 {
-    "username":"ANEP",
+    "username":"HARITH",
     "password":"123456"
 }
 ###User create visitor 
 POST http://localhost:3000/create/visitor/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFORVAiLCJpYXQiOjE3MDM2NDA2NDgsImV4cCI6MTcwMzY0MTI0OH0.SqEr4q9LqlDyzH235LGKxUpFxzpPeflEDXAI7zq17Jo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTcwMzUwMTcyMCwiZXhwIjoxNzAzNTAxNzgwfQ.sOIwQcn8CLaSRmI9hbr272bADwy-_GuAAf6Mic4flKM
+
 {
-    "visitorname": "AMIR",
+    "visitorname": "KIEW",
     "checkintime": "2001-06-24T09:34:55Z",
     "checkouttime":"2001-06-24T13:23:50Z",    
     "temperature":"27.5",
@@ -46,7 +50,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFOR
 ###user view all visitors data that had created by that him (login user)
 GET http://localhost:3000/view/visitor/user
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTcwMzUwMDYxOSwiZXhwIjoxNzAzNTAwNjc5fQ.s5NTsjdIQ1fJvJYrTAp9qMjc8MIdVuwODCXSbY7Ailw
-
+###user delete its visitor (by given visitorname) 
+DELETE http://localhost:3000/delete/visitor/JOHN
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNBTSIsImlhdCI6MTY4NjkyMjIwMSwiZXhwIjoxNjg2OTIyMjYxfQ.D6hv7XSwntFBlwk5fH9s8EVRsPJ7ctQSaQYaptkXdTk
 ###User update their visitor info
 PUT http://localhost:3000/update/visitor/Celine
 Content-Type: application/json

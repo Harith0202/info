@@ -1,10 +1,6 @@
 const express = require('express');
 const app = express();
-
-const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-const port = process.env.PORT || 3000;
-
+const port = 3000;
 
 const MongoURI = process.env.MONGODB_URI;
 
@@ -60,36 +56,18 @@ client.connect().then(res => {
 });
 
 app.use(express.json());
+//security register the user account
+app.post('/register/user',verifyToken, async (req, res) => {
+  let result = register(
+    req.body.username,
+    req.body.password,
+    req.body.name,
+    req.body.email,
+  );
 
-app.post('/register/user', async (req, res) => {
-  try {
-    // Call the async register function and await its result
-    let result = await register(
-      req.body.username,
-      req.body.password,
-      req.body.name,
-      req.body.email,
-    );
-
-    // Check the result for a success property
-    if (result && result.success) {
-      res.status(201).send(result);
-    } else {
-      res.status(400).send({ 
-        success: false, 
-        message: "Registration failed",
-        details: result
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
-      success: false,
-      message: "The operation completed with warnings, an error occurred.",
-      error: error.message
-    });
-  }
+  res.send(result);
 });
+
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
 app.post('/login/security', (req, res) => {
   console.log(req.body);
@@ -124,6 +102,39 @@ app.get('/view/visitor/security', verifyToken, async (req, res) => {
   }
 });
 
+/// security have kuasa to delete the user account after delete the user account all the visitor created by particular user also will delete
+app.delete('/delete/user/:username', verifyToken, async (req, res) => {
+  const username = req.params.username;
+
+  try {
+    // Delete the user
+    const deleteUserResult = await client
+      .db('benr2423')
+      .collection('users')
+      .deleteOne({ username });
+
+    if (deleteUserResult.deletedCount === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    // Delete the user's documents
+    const deleteDocumentsResult = await client
+      .db('benr2423')
+      .collection('documents')
+      .deleteMany({ username });
+
+    // Delete the visitors created by the user
+    const deleteVisitorsResult = await client
+      .db('benr2423')
+      .collection('visitor')
+      .deleteMany({ createdBy: username });
+
+    res.send('User and associated data deleted successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 //user login account 
 app.post('/login/user', (req, res) => {
@@ -177,7 +188,28 @@ app.get('/view/visitor/user', verifyToken, async (req, res) => {
   }
 });
 
+/// user delete its visitor
+app.delete('/delete/visitor/:visitorname', verifyToken, async (req, res) => {
+  const visitorname = req.params.visitorname;
+  const username = req.user.username; // Assuming the username is available in the req.user object
 
+  try {
+    // Find the visitor by visitorname and createdBy field to ensure the visitor belongs to the user
+    const deleteVisitorResult = await client
+      .db('benr2423')
+      .collection('visitor')
+      .deleteOne({ visitorname: visitorname, createdBy: username });
+
+    if (deleteVisitorResult.deletedCount === 0) {
+      return res.status(404).send('Visitor not found or unauthorized');
+    }
+
+    res.send('Visitor deleted successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 /// user update its visitor info
 app.put('/update/visitor/:visitorname', verifyToken, async (req, res) => {
   const visitorname = req.params.visitorname;
@@ -253,27 +285,14 @@ async function loginuser(reqUsername, reqPassword) {
     return { message: "Invalid password" };
 }
 
-async function register(username, password, name, email) {
-  try {
-  const result = await client.db('benr2423').collection('users').insertOne({
-    username,
-    password,
-    name,
-    email,
+function register(reqUsername, reqPassword, reqName, reqEmail) {
+  client.db('benr2423').collection('users').insertOne({
+    "username": reqUsername,
+    "password": reqPassword,
+    "name": reqName,
+    "email": reqEmail,
   });
-  // Return an object with a success property
-  return {
-    success: true,
-    result: result.ops[0] // Assuming you want to return the inserted document
-  };
-} catch (error) {
-  // Handle any errors that occur during the insert
-  console.error(error);
-  return {
-    success: false,
-    error: error.message
-  };
-}
+  return "account created";
 }
 ///create visitor 
 function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
