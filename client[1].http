@@ -9,7 +9,6 @@ Content-Type: application/json
 }
 ###security register user account
 POST http://localhost:3000/register/user 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhBUklUSCIsImlhdCI6MTcwMzc3MTcxOCwiZXhwIjoxNzAzNzcyMzE4fQ.EQGYzIy-D-jS3lB0VVeQ6rgffyJDemMlo4WMuJyTbyo
 
 {
     "username":"ANEP",
@@ -17,6 +16,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhBU
     "name":"HARIH ROSLY",
     "email":"harithrosly@mail.com"
 }
+
 ###security view all the visitor data
 GET http://localhost:3000/view/visitor/security
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhBUklUSCIsImlhdCI6MTcwMzc3MzA5MCwiZXhwIjoxNzAzNzczNjkwfQ.R1WWlQHt3k-FZcCTCq8lbyMRg0vNqFE4wDzBJJrRpgY
