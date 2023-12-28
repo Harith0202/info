@@ -42,7 +42,7 @@ const options = {
 
 const swaggerSpec = swaggerJsdoc(options);
 
-app.use( swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://harith:Harith123@cluster0.iezu3ww.mongodb.net/?retryWrites=true&w=majority";
@@ -86,7 +86,9 @@ app.post('/register/user', async (req, res) => {
       // If you want to suppress the 500 error message, you can change the status code and message here.
       // Again, not recommended as it hides the error from the user.
       res.status(200).send({
-        result: result // You can choose to send back the original result or not.
+        success: false,
+        message: "The operation completed with warnings, an error occurred.",
+        error: error.message // Including the error message is useful for debugging.
       });
     }
   });
