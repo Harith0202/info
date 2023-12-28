@@ -61,36 +61,43 @@ client.connect().then(res => {
 
 app.use(express.json());
 
-app.post('/register/user', async (req, res) => { try {
-  let result = register(
-    req.body.username,
-    req.body.password,
-    req.body.name,
-    req.body.email,
-  );
+app.post('/register/user', async (req, res) => {
+  try {
+    // Await the result of the register function to make sure it completes before moving on
+    let result = await register(
+      req.body.username,
+      req.body.password,
+      req.body.name,
+      req.body.email,
+    );
 
-    // Assuming the register function returns an object with a 'success' property.
-    if (result.success) {
-      res.status(201).send(result); // 201 Created
+    // Check if the result has a property 'success' and it's true
+    if (result && result.success) {
+      // If successful, send a 201 Created status with the result
+      res.status(201).send(result);
     } else {
-      // Here we're changing the response for a registration failure
-      // that normally would send a 400 status.
-      // This should be a temporary fix.
-      res.status(200).send({
-        result: result // You can choose to send back the original result or not.
+      // If the result object doesn't have a success property or it's not true, send a 400 Bad Request status
+      // It's better to send a 400 status here because it indicates that the request was not successful
+      res.status(400).send({
+        success: false,
+        message: "Registration failed",
+        details: result // You can decide whether to send back the raw result or not
       });
     }
   } catch (error) {
-      console.error(error);
-      // If you want to suppress the 500 error message, you can change the status code and message here.
-      // Again, not recommended as it hides the error from the user.
-      res.status(200).send({
-        success: false,
-        message: "The operation completed with warnings, an error occurred.",
-        error: error.message // Including the error message is useful for debugging.
-      });
-    }
-  });
+    // Log the error to the console for debugging
+    console.error(error);
+
+    // Send a 500 Internal Server Error status if an exception occurs
+    // It's important to let the client know that an error occurred on the server
+    res.status(500).send({
+      success: false,
+      message: "An error occurred during registration.",
+      error: error.message // Including the error message is useful for debugging
+    });
+  }
+});
+
 
 
 
@@ -257,7 +264,7 @@ async function loginuser(reqUsername, reqPassword) {
     return { message: "Invalid password" };
 }
 
-async function register(reqUsername, reqPassword, reqName, reqEmail) {
+async function register(username, password, name, email) {
   try {
     const result = await client.db('benr2423').collection('users').insertOne({
       username: reqUsername,
