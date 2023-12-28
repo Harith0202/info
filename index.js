@@ -264,7 +264,7 @@ async function loginuser(reqUsername, reqPassword) {
     return { message: "Invalid password" };
 }
 
-async function register(username, password, name, email) {
+async function register(reqUsername, reqPassword, reqName, reqEmail) {
   try {
     const result = await client.db('benr2423').collection('users').insertOne({
       username: reqUsername,
