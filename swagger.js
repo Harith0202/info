@@ -19,7 +19,7 @@
  *     tags:
  *       - User Management
  *     summary: Register a new user
- *     description: This endpoint is for creating a new user account. It will reject the request if the username is already taken.
+ *     description: This endpoint is for creating a new user account.
  *     requestBody:
  *       required: true
  *       content:
@@ -44,11 +44,10 @@
  *       201:
  *         description: User created successfully
  *       400:
- *         description: Bad request. There might be validation errors, or the username is already taken.
+ *         description: Bad request. User data is not valid.
  *       500:
  *         description: Internal server error
  */
-
 
 /**
  * @swagger
