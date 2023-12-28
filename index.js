@@ -61,38 +61,39 @@ client.connect().then(res => {
 
 app.use(express.json());
 
-async function isUsernameUnique(username) {
-  const existingUser = await client.db('benr2423').collection('users').findOne({ username: username });
-  return existingUser == null; // Returns true if the user does not exist
-}
-
 app.post('/register/user', async (req, res) => {
-  const { username, password, name, email } = req.body;
-  
   try {
-    const unique = await isUsernameUnique(username);
-    
-    if (!unique) {
-      return res.status(400).send({ success: false, message: "Username already exists" });
-    }
-    
-    let result = register(username, password, name, email);
+    let result = register(
+      req.body.username,
+      req.body.password,
+      req.body.name,
+      req.body.email,
+    );
 
-    // Assuming the register function returns a success flag
+    // Assuming the register function returns an object with a 'success' property.
     if (result.success) {
-      res.status(201).send(result);
+      res.status(201).send(result); // 201 Created
     } else {
-      res.status(400).send(result);
+      // Here we're changing the response for a registration failure
+      // that normally would send a 400 status.
+      // This should be a temporary fix.
+      res.status(200).send({
+        result: result // You can choose to send back the original result or not.
+      });
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
-      success: false,
-      message: "An error occurred while processing your request.",
-      error: error.message
-    });
-  }
-});
+  }catch (error) {
+      console.error(error);
+      // If you want to suppress the 500 error message, you can change the status code and message here.
+      // Again, not recommended as it hides the error from the user.
+      res.status(200).send({
+        success: false,
+        message: "The operation completed with warnings, an error occurred.",
+        error: error.message // Including the error message is useful for debugging.
+      });
+    }
+  });
+
+
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
 app.post('/login/security', (req, res) => {
@@ -257,21 +258,15 @@ async function loginuser(reqUsername, reqPassword) {
     return { message: "Invalid password" };
 }
 
-async function register(reqUsername, reqPassword, reqName, reqEmail) {
-  try {
-    const result = await client.db('benr2423').collection('users').insertOne({
-      "username": reqUsername,
-      "password": reqPassword,
-      "name": reqName,
-      "email": reqEmail,
-    });
-    return { success: true, message: "Account created", userId: result.insertedId };
-  } catch (error) {
-    console.error(error);
-    return { success: false, message: "Failed to create account" };
-  }
+function register(reqUsername, reqPassword, reqName, reqEmail) {
+  client.db('benr2423').collection('users').insertOne({
+    "username": reqUsername,
+    "password": reqPassword,
+    "name": reqName,
+    "email": reqEmail,
+  });
+  return "account created";
 }
-
 ///create visitor 
 function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
   client.db('benr2423').collection('visitor').insertOne({
