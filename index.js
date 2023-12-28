@@ -70,12 +70,18 @@ app.post('/register/user', async (req, res) => {
       req.body.email,
     );
 
-    // If the account is successfully created, send a 201 Created status code.
+    // Assuming the register function returns an object with a 'success' property.
     if (result.success) {
-      res.status(201).send({ success: true, message: "Account created" });
+      res.status(201).send(result); // 201 Created
     } else {
-      // If there is a problem with the account creation, send a 400 Bad Request status code.
-      res.status(400).send({ success: false, message: result.message });
+      // Here we're changing the response for a registration failure
+      // that normally would send a 400 status.
+      // This should be a temporary fix.
+      res.status(200).send({
+        success: false,
+        message: "The operation completed with warnings, user not created.",
+        result: result // You can choose to send back the original result or not.
+      });
     }
   }catch (error) {
       console.error(error);
