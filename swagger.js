@@ -16,21 +16,16 @@
  * @swagger
  * /register/user:
  *   post:
- *     summary: Register a new user
- *     description: This endpoint is for creating a new user account.
  *     tags:
  *       - User Management
+ *     summary: Register a new user
+ *     description: This endpoint is for creating a new user account.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - username
- *               - password
- *               - name
- *               - email
  *             properties:
  *               username:
  *                 type: string
@@ -40,15 +35,19 @@
  *                 type: string
  *               email:
  *                 type: string
+ *             required:
+ *               - username
+ *               - password
+ *               - name
+ *               - email
  *     responses:
  *       201:
- *         description: User registered successfully.
+ *         description: User created successfully
  *       400:
- *         description: Bad request. The server could not understand the request due to invalid syntax.
+ *         description: Bad request. User data is not valid.
  *       500:
- *         description: Internal Server Error. A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
+ *         description: Internal server error
  */
-
 
 /**
  * @swagger
