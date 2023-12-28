@@ -77,16 +77,17 @@ app.post('/register/user', async (req, res) => {
       // If there is a problem with the account creation, send a 400 Bad Request status code.
       res.status(400).send({ success: false, message: result.message });
     }
-  } catch (error) {
-    console.error(error);
-    // For server errors, send a 500 Internal Server Error status code.
-    res.status(500).send({
-      success: false,
-      message: "An error occurred while processing your request.",
-      error: error.message
-    });
-  }
-});
+  }catch (error) {
+      console.error(error);
+      // If you want to suppress the 500 error message, you can change the status code and message here.
+      // Again, not recommended as it hides the error from the user.
+      res.status(200).send({
+        success: false,
+        message: "The operation completed with warnings, an error occurred.",
+        error: error.message // Including the error message is useful for debugging.
+      });
+    }
+  });
 
 
 
