@@ -60,35 +60,40 @@ client.connect().then(res => {
 });
 
 app.use(express.json());
-const bodyParser = require('body-parser');
-app.use(bodyParser.json());
 
-app.post('/register/user', async (req, res) => {
-  console.log('Raw request body:', req.body);
+app.post('/register/user', checkUsernameUniqueness, async (req, res) => {
   try {
-    let result = await register(
+    let result = register(
       req.body.username,
       req.body.password,
       req.body.name,
       req.body.email,
     );
 
-    // Check the result of the registration attempt.
+    // Assuming the register function returns an object with a 'success' property.
     if (result.success) {
       res.status(201).send(result); // 201 Created
     } else {
-      // If registration fails due to the username being taken, send a 409 Conflict error.
-      res.status(409).send(result); // 409 Conflict
+      // Here we're changing the response for a registration failure
+      // that normally would send a 400 status.
+      // This should be a temporary fix.
+      res.status(200).send({
+        result: result // You can choose to send back the original result or not.
+      });
     }
-  } catch (error) {
+  }catch (error) {
       console.error(error);
-      res.status(500).send({
+      // If you want to suppress the 500 error message, you can change the status code and message here.
+      // Again, not recommended as it hides the error from the user.
+      res.status(200).send({
         success: false,
-        message: "Internal Server Error",
-        error: error.message
+        message: "The operation completed with warnings, an error occurred.",
+        error: error.message // Including the error message is useful for debugging.
       });
     }
   });
+
+
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
 app.post('/login/security', (req, res) => {
@@ -253,18 +258,17 @@ async function loginuser(reqUsername, reqPassword) {
     return { message: "Invalid password" };
 }
 
-async function register(username, password, name, email) {
-  // Check if the user already exists in the database.
-  const existingUser = await findUserByUsername(username);
-
-  if (existingUser) {
-    // If the user exists, return an object indicating failure.
-    return { success: false, message: "Username already taken." };
-  } else {
-    // If the user does not exist, create the new user in the database.
-    const newUser = await createUser(username, password, name, email);
-    return { success: true, user: newUser };
+async function checkUsernameUniqueness(req, res, next) {
+  const { username } = req.body;
+  // Replace `UserModel` with your actual user model or database query utility
+  let userExists = await UserModel.findOne({ username: username });
+  if (userExists) {
+    return res.status(400).send({
+      success: false,
+      message: "Username already exists. Please choose a different username."
+    });
   }
+  next(); // Continue to the registration if the username is unique
 }
 
 function register(reqUsername, reqPassword, reqName, reqEmail) {

@@ -19,7 +19,7 @@
  *     tags:
  *       - User Management
  *     summary: Register a new user
- *     description: This endpoint is for creating a new user account with a unique username.
+ *     description: This endpoint is for creating a new user account. It will reject the request if the username is already taken.
  *     requestBody:
  *       required: true
  *       content:
@@ -29,7 +29,6 @@
  *             properties:
  *               username:
  *                 type: string
- *                 description: Must be unique.
  *               password:
  *                 type: string
  *               name:
@@ -43,13 +42,11 @@
  *               - email
  *     responses:
  *       201:
- *         description: User created successfully.
+ *         description: User created successfully
  *       400:
- *         description: Bad request. User data is not valid.
- *       409:
- *         description: Conflict. Username already exists.
+ *         description: Bad request. There might be validation errors, or the username is already taken.
  *       500:
- *         description: Internal server error.
+ *         description: Internal server error
  */
 
 
