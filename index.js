@@ -61,14 +61,13 @@ client.connect().then(res => {
 
 app.use(express.json());
 
-app.post('/register/user', async (req, res) => {
-  try {
-    let result = register(
-      req.body.username,
-      req.body.password,
-      req.body.name,
-      req.body.email,
-    );
+app.post('/register/user', async (req, res) => { try {
+  let result = register(
+    req.body.username,
+    req.body.password,
+    req.body.name,
+    req.body.email,
+  );
 
     // Assuming the register function returns an object with a 'success' property.
     if (result.success) {
@@ -81,7 +80,7 @@ app.post('/register/user', async (req, res) => {
         result: result // You can choose to send back the original result or not.
       });
     }
-  }catch (error) {
+  } catch (error) {
       console.error(error);
       // If you want to suppress the 500 error message, you can change the status code and message here.
       // Again, not recommended as it hides the error from the user.
@@ -258,15 +257,21 @@ async function loginuser(reqUsername, reqPassword) {
     return { message: "Invalid password" };
 }
 
-function register(reqUsername, reqPassword, reqName, reqEmail) {
-  client.db('benr2423').collection('users').insertOne({
-    "username": reqUsername,
-    "password": reqPassword,
-    "name": reqName,
-    "email": reqEmail,
-  });
-  return "account created";
+async function register(reqUsername, reqPassword, reqName, reqEmail) {
+  try {
+    const result = await client.db('benr2423').collection('users').insertOne({
+      username: reqUsername,
+      password: reqPassword,
+      name: reqName,
+      email: reqEmail,
+    });
+    return { success: true, result: result.ops[0] };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error.message };
+  }
 }
+
 ///create visitor 
 function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
   client.db('benr2423').collection('visitor').insertOne({

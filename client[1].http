@@ -4,12 +4,12 @@ POST http://localhost:3000/login/security
 Content-Type: application/json
 
 {
-    "username":"Harith",
+    "username":"HARITH",
     "password":"123456"
 }
 ###security register user account
 POST http://localhost:3000/register/user 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvbyIsImlhdCI6MTcwMzY1MTQyMiwiZXhwIjoxNzAzNjUyMDIyfQ.WaawHLrfxasXZsfhSXdrwF5dzmDDDcTlXm3bNL19-OA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhBUklUSCIsImlhdCI6MTcwMzc3MTcxOCwiZXhwIjoxNzAzNzcyMzE4fQ.EQGYzIy-D-jS3lB0VVeQ6rgffyJDemMlo4WMuJyTbyo
 
 {
     "username":"ANEP",
@@ -19,7 +19,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvb
 }
 ###security view all the visitor data
 GET http://localhost:3000/view/visitor/security
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvbyIsImlhdCI6MTY4NjkyMDIwNywiZXhwIjoxNjg2OTIwMjY3fQ.VuZbD6GoFQlQA_b4ARxmps3uDx4aHRCKnrI0vGIc4iU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhBUklUSCIsImlhdCI6MTcwMzc3MzA5MCwiZXhwIjoxNzAzNzczNjkwfQ.R1WWlQHt3k-FZcCTCq8lbyMRg0vNqFE4wDzBJJrRpgY
 
 ### User UI
 ###User login 
