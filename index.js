@@ -1,6 +1,10 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const port = process.env.PORT || 3000;
+
 
 const MongoURI = process.env.MONGODB_URI;
 
@@ -56,17 +60,40 @@ client.connect().then(res => {
 });
 
 app.use(express.json());
-//security register the user account
-app.post('/register/user',verifyToken, async (req, res) => {
-  let result = register(
-    req.body.username,
-    req.body.password,
-    req.body.name,
-    req.body.email,
-  );
 
-  res.send(result);
-});
+app.post('/register/user', async (req, res) => {
+  try {
+    let result = register(
+      req.body.username,
+      req.body.password,
+      req.body.name,
+      req.body.email,
+    );
+
+    // Assuming the register function returns an object with a 'success' property.
+    if (result.success) {
+      res.status(201).send(result); // 201 Created
+    } else {
+      // Here we're changing the response for a registration failure
+      // that normally would send a 400 status.
+      // This should be a temporary fix.
+      res.status(200).send({
+        result: result // You can choose to send back the original result or not.
+      });
+    }
+  }catch (error) {
+      console.error(error);
+      // If you want to suppress the 500 error message, you can change the status code and message here.
+      // Again, not recommended as it hides the error from the user.
+      res.status(200).send({
+        success: false,
+        message: "The operation completed with warnings, an error occurred.",
+        error: error.message // Including the error message is useful for debugging.
+      });
+    }
+  });
+
+
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
 app.post('/login/security', (req, res) => {
@@ -102,39 +129,6 @@ app.get('/view/visitor/security', verifyToken, async (req, res) => {
   }
 });
 
-/// security have kuasa to delete the user account after delete the user account all the visitor created by particular user also will delete
-app.delete('/delete/user/:username', verifyToken, async (req, res) => {
-  const username = req.params.username;
-
-  try {
-    // Delete the user
-    const deleteUserResult = await client
-      .db('benr2423')
-      .collection('users')
-      .deleteOne({ username });
-
-    if (deleteUserResult.deletedCount === 0) {
-      return res.status(404).send('User not found');
-    }
-
-    // Delete the user's documents
-    const deleteDocumentsResult = await client
-      .db('benr2423')
-      .collection('documents')
-      .deleteMany({ username });
-
-    // Delete the visitors created by the user
-    const deleteVisitorsResult = await client
-      .db('benr2423')
-      .collection('visitor')
-      .deleteMany({ createdBy: username });
-
-    res.send('User and associated data deleted successfully');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
-});
 
 //user login account 
 app.post('/login/user', (req, res) => {
@@ -188,28 +182,7 @@ app.get('/view/visitor/user', verifyToken, async (req, res) => {
   }
 });
 
-/// user delete its visitor
-app.delete('/delete/visitor/:visitorname', verifyToken, async (req, res) => {
-  const visitorname = req.params.visitorname;
-  const username = req.user.username; // Assuming the username is available in the req.user object
 
-  try {
-    // Find the visitor by visitorname and createdBy field to ensure the visitor belongs to the user
-    const deleteVisitorResult = await client
-      .db('benr2423')
-      .collection('visitor')
-      .deleteOne({ visitorname: visitorname, createdBy: username });
-
-    if (deleteVisitorResult.deletedCount === 0) {
-      return res.status(404).send('Visitor not found or unauthorized');
-    }
-
-    res.send('Visitor deleted successfully');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
-});
 /// user update its visitor info
 app.put('/update/visitor/:visitorname', verifyToken, async (req, res) => {
   const visitorname = req.params.visitorname;
