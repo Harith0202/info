@@ -20,6 +20,8 @@
  *     description: This endpoint is for creating a new user account.
  *     tags:
  *       - User Management
+ *     security:
+ *       - BearerAuth: [] # Applies the BearerAuth security to the route
  *     requestBody:
  *       required: true
  *       content:
@@ -50,7 +52,6 @@
  *       500:
  *         description: Internal Server Error. A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
  */
-
 
 /**
  * @swagger

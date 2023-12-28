@@ -42,7 +42,7 @@ const options = {
 
 const swaggerSpec = swaggerJsdoc(options);
 
-app.use('', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://harith:Harith123@cluster0.iezu3ww.mongodb.net/?retryWrites=true&w=majority";
@@ -61,8 +61,10 @@ client.connect().then(res => {
 
 app.use(express.json());
 
-app.post('/register/user', async (req, res) => {
+app.post('/register/user', verifyToken, async (req, res) => {
   try {
+    console.log(req.security);
+
     let result = register(
       req.body.username,
       req.body.password,
@@ -70,16 +72,25 @@ app.post('/register/user', async (req, res) => {
       req.body.email,
     );
 
+    // Assuming the register function returns an object with a 'success' property.
     if (result.success) {
       res.status(201).send(result); // 201 Created
     } else {
-      res.status(400).send(result); // Send the result with a 400 status for registration failure.
+      // Here we're changing the response for a registration failure
+      // that normally would send a 400 status.
+      // This should be a temporary fix.
+      res.status(200).send({
+        
+        result: result // You can choose to send back the original result or not.
+      });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send({
+    // If you want to suppress the 500 error message, you can change the status code and message here.
+    // Again, not recommended as it hides the error from the user.
+    res.status(200).send({
       success: false,
-      message: "An error occurred while processing your request.",
+      message: "The operation completed with warnings, an error occurred.",
       error: error.message // Including the error message is useful for debugging.
     });
   }
