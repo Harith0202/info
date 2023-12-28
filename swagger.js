@@ -19,7 +19,7 @@
  *     tags:
  *       - User Management
  *     summary: Register a new user
- *     description: This endpoint is for creating a new user account.
+ *     description: This endpoint is for creating a new user account with a unique username.
  *     requestBody:
  *       required: true
  *       content:
@@ -29,6 +29,7 @@
  *             properties:
  *               username:
  *                 type: string
+ *                 description: Must be unique.
  *               password:
  *                 type: string
  *               name:
@@ -42,12 +43,15 @@
  *               - email
  *     responses:
  *       201:
- *         description: User created successfully
+ *         description: User created successfully.
  *       400:
  *         description: Bad request. User data is not valid.
+ *       409:
+ *         description: Conflict. Username already exists.
  *       500:
- *         description: Internal server error
+ *         description: Internal server error.
  */
+
 
 /**
  * @swagger
