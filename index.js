@@ -63,38 +63,33 @@ app.use(express.json());
 
 app.post('/register/user', async (req, res) => {
   try {
-    let result = register(
+    // Call the async register function and await its result
+    let result = await register(
       req.body.username,
       req.body.password,
       req.body.name,
       req.body.email,
     );
 
-    // Assuming the register function returns an object with a 'success' property.
-    if (result.success) {
-      res.status(201).send(result); // 201 Created
+    // Check the result for a success property
+    if (result && result.success) {
+      res.status(201).send(result);
     } else {
-      // Here we're changing the response for a registration failure
-      // that normally would send a 400 status.
-      // This should be a temporary fix.
-      res.status(200).send({
-        result: result // You can choose to send back the original result or not.
+      res.status(400).send({ 
+        success: false, 
+        message: "Registration failed",
+        details: result
       });
     }
-  }catch (error) {
-      console.error(error);
-      // If you want to suppress the 500 error message, you can change the status code and message here.
-      // Again, not recommended as it hides the error from the user.
-      res.status(200).send({
-        success: false,
-        message: "The operation completed with warnings, an error occurred.",
-        error: error.message // Including the error message is useful for debugging.
-      });
-    }
-  });
-
-
-
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      message: "The operation completed with warnings, an error occurred.",
+      error: error.message
+    });
+  }
+});
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
 app.post('/login/security', (req, res) => {
   console.log(req.body);
@@ -258,14 +253,27 @@ async function loginuser(reqUsername, reqPassword) {
     return { message: "Invalid password" };
 }
 
-function register(reqUsername, reqPassword, reqName, reqEmail) {
-  client.db('benr2423').collection('users').insertOne({
-    "username": reqUsername,
-    "password": reqPassword,
-    "name": reqName,
-    "email": reqEmail,
+async function register(username, password, name, email) {
+  try {
+  const result = await client.db('benr2423').collection('users').insertOne({
+    username,
+    password,
+    name,
+    email,
   });
-  return "account created";
+  // Return an object with a success property
+  return {
+    success: true,
+    result: result.ops[0] // Assuming you want to return the inserted document
+  };
+} catch (error) {
+  // Handle any errors that occur during the insert
+  console.error(error);
+  return {
+    success: false,
+    error: error.message
+  };
+}
 }
 ///create visitor 
 function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
