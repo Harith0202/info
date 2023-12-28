@@ -70,21 +70,24 @@ app.post('/register/user', async (req, res) => {
       req.body.email,
     );
 
-    // Assuming the register function returns an object with a 'success' property.
+    // If the account is successfully created, send a 201 Created status code.
     if (result.success) {
-      res.status(201).send(result); // 201 Created
+      res.status(201).send({ success: true, message: "Account created" });
     } else {
-      res.status(400).send(result); // 400 Bad Request
+      // If there is a problem with the account creation, send a 400 Bad Request status code.
+      res.status(400).send({ success: false, message: result.message });
     }
   } catch (error) {
     console.error(error);
+    // For server errors, send a 500 Internal Server Error status code.
     res.status(500).send({
       success: false,
       message: "An error occurred while processing your request.",
-      error: error.message // Including the error message is useful for debugging.
+      error: error.message
     });
   }
 });
+
 
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
