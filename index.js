@@ -78,8 +78,6 @@ app.post('/register/user', async (req, res) => {
       // that normally would send a 400 status.
       // This should be a temporary fix.
       res.status(200).send({
-        success: false,
-        message: "The operation completed with warnings, user not created.",
         result: result // You can choose to send back the original result or not.
       });
     }
