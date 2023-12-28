@@ -9,11 +9,11 @@ Content-Type: application/json
 }
 ###security register user account
 POST http://localhost:3000/register/user 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhBUklUSCIsImlhdCI6MTcwMzc4ODI4OCwiZXhwIjoxNzAzNzg4ODg4fQ.Ocy8E_qYZL0ua47yaiHepJNMq2eaBAeKwH60wwCLTuE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhBUklUSCIsImlhdCI6MTcwMzc4OTUwMiwiZXhwIjoxNzAzNzkwMTAyfQ.i2w65piyYhQQ3jTvmrWruWnAIb8kkGpQg2LCoeITOEY
 Content-Type: application/json
 
 {
-    "username":"HARITH",
+    "username":"aifi",
     "password":"123456",
     "name":"HARIH ROSLY",
     "email":"harithrosly@mail.com"

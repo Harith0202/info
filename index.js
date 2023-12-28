@@ -45,7 +45,7 @@ const swaggerSpec = swaggerJsdoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://harith:Harith123@cluster0.iezu3ww.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://harithrosly123:Harith123@cluster0.cfe5zxw.mongodb.net/?retryWrites=true&w=majority";
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -61,38 +61,27 @@ client.connect().then(res => {
 
 app.use(express.json());
 
-app.post('/register/user', async (req, res) => {
+app.post('/register/user', verifyToken, async (req, res) => {
   try {
-    let result = register(
-      req.body.username,
-      req.body.password,
-      req.body.name,
-      req.body.email,
-    );
+    const userData = {
+      username: req.body.username,
+      password: req.body.password,
+      name: req.body.name,
+      email: req.body.email,
+    };
 
-    // Assuming the register function returns an object with a 'success' property.
+    const result = await register(userData);
+
     if (result.success) {
-      res.status(201).send(result); // 201 Created
+      res.status(201).json(result); // Return JSON response
     } else {
-      // Here we're changing the response for a registration failure
-      // that normally would send a 400 status.
-      // This should be a temporary fix.
-      res.status(200).send({
-        result: result // You can choose to send back the original result or not.
-      });
+      res.status(400).json(result); // Return JSON response
     }
-  }catch (error) {
-      console.error(error);
-      // If you want to suppress the 500 error message, you can change the status code and message here.
-      // Again, not recommended as it hides the error from the user.
-      res.status(200).send({
-        success: false,
-        message: "The operation completed with warnings, an error occurred.",
-        error: error.message // Including the error message is useful for debugging.
-      });
-    }
-  });
-
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" }); // Return JSON response
+}
+});
 
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
@@ -258,14 +247,34 @@ async function loginuser(reqUsername, reqPassword) {
     return { message: "Invalid password" };
 }
 
-function register(reqUsername, reqPassword, reqName, reqEmail) {
-  client.db('benr2423').collection('users').insertOne({
-    "username": reqUsername,
-    "password": reqPassword,
-    "name": reqName,
-    "email": reqEmail,
-  });
-  return "account created";
+// Update the register function to accept a single userData object
+async function register(userData) {
+  try {
+    // Basic input validation
+    if (!userData.username || !userData.password || !userData.name || !userData.email) {
+      throw new Error('Incomplete user data. Please provide all required fields.');
+    }
+
+    // Check if the username is already taken
+    const existingUser = await client.db('benr2423').collection('users').findOne({ username: userData.username });
+    if (existingUser) {
+      throw new Error('Username is already taken. Please choose a different username.');
+    }
+
+    // Insert the user data into the database
+    const result = await client.db('benr2423').collection('users').insertOne(userData);
+
+    // Check if the insertion was successful
+    if (!result.acknowledged) {
+      throw new Error('Failed to create the user account.');
+    }
+
+    // Return success message
+    return { success: true, message: "Account created" };
+  } catch (error) {
+    // Return detailed error message in case of any issues
+    return { success: false, message: error.message };
+}
 }
 ///create visitor 
 function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
