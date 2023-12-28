@@ -60,8 +60,11 @@ client.connect().then(res => {
 });
 
 app.use(express.json());
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
 
 app.post('/register/user', async (req, res) => {
+  console.log('Raw request body:', req.body);
   try {
     let result = await register(
       req.body.username,
