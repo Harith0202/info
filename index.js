@@ -42,7 +42,7 @@ const options = {
 
 const swaggerSpec = swaggerJsdoc(options);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use( swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://harith:Harith123@cluster0.iezu3ww.mongodb.net/?retryWrites=true&w=majority";
