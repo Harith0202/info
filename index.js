@@ -258,14 +258,34 @@ async function loginuser(reqUsername, reqPassword) {
     return { message: "Invalid password" };
 }
 
-function register(reqUsername, reqPassword, reqName, reqEmail) {
-  client.db('benr2423').collection('users').insertOne({
-    "username": reqUsername,
-    "password": reqPassword,
-    "name": reqName,
-    "email": reqEmail,
-  });
-  return "account created";
+// Update the register function to accept a single userData object
+async function register(userData) {
+  try {
+    // Basic input validation
+    if (!userData.username || !userData.password || !userData.name || !userData.email) {
+      throw new Error('Incomplete user data. Please provide all required fields.');
+    }
+
+    // Check if the username is already taken
+    const existingUser = await client.db('benr2423').collection('users').findOne({ username: userData.username });
+    if (existingUser) {
+      throw new Error('Username is already taken. Please choose a different username.');
+    }
+
+    // Insert the user data into the database
+    const result = await client.db('benr2423').collection('users').insertOne(userData);
+
+    // Check if the insertion was successful
+    if (!result.acknowledged) {
+      throw new Error('Failed to create the user account.');
+    }
+
+    // Return success message
+    return { success: true, message: "Account created" };
+  } catch (error) {
+    // Return detailed error message in case of any issues
+    return { success: false, message: error.message };
+}
 }
 ///create visitor 
 function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
