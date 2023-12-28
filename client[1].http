@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 ###security register user account
 POST http://localhost:3000/register/user 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhBUklUSCIsImlhdCI6MTcwMzc4MDg2NywiZXhwIjoxNzAzNzgxNDY3fQ.VZETkqG0Hd4hClLpQNIN6FYh3dYYwDSfb-ibbRH9v2g
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhBUklUSCIsImlhdCI6MTcwMzc4ODI4OCwiZXhwIjoxNzAzNzg4ODg4fQ.Ocy8E_qYZL0ua47yaiHepJNMq2eaBAeKwH60wwCLTuE
 Content-Type: application/json
 
 {
