@@ -63,36 +63,25 @@ app.use(express.json());
 
 app.post('/register/user', async (req, res) => {
   try {
-    let result = register(
-      req.body.username,
-      req.body.password,
-      req.body.name,
-      req.body.email,
-    );
+    const userData = {
+      username: req.body.username,
+      password: req.body.password,
+      name: req.body.name,
+      email: req.body.email,
+    };
 
-    // Assuming the register function returns an object with a 'success' property.
+    const result = await register(userData);
+
     if (result.success) {
-      res.status(201).send(result); // 201 Created
+      res.status(201).json(result); // Return JSON response
     } else {
-      // Here we're changing the response for a registration failure
-      // that normally would send a 400 status.
-      // This should be a temporary fix.
-      res.status(200).send({
-        result: result // You can choose to send back the original result or not.
-      });
+      res.status(400).json(result); // Return JSON response
     }
-  }catch (error) {
-      console.error(error);
-      // If you want to suppress the 500 error message, you can change the status code and message here.
-      // Again, not recommended as it hides the error from the user.
-      res.status(200).send({
-        success: false,
-        message: "The operation completed with warnings, an error occurred.",
-        error: error.message // Including the error message is useful for debugging.
-      });
-    }
-  });
-
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" }); // Return JSON response
+}
+});
 
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
