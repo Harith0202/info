@@ -228,16 +228,16 @@ app.post('/retrieve/visitortoken', async (req, res) => {
     // Retrieve the visitor's details including the token
     const visitor = user.visitors.find(v => v.visitorname === visitorname && v.phonenumber === phonenumber);
 
-    if (!visitor) {
-      return res.status(404).json({ success: false, message: 'Visitor details not found.' });
+    if (visitor) {
+      // Respond with the token if the visitor is found
+      res.json({ success: true, visitorToken: visitor.visitorToken });
+    } else {
+      // Respond with an error if the visitor is not found
+      res.status(404).json({ success: false, message: 'Visitor not found.' });
     }
-
-    // Return the original token that was generated for the visitor
-    res.json({ success: true, visitorToken: visitor.token });
-
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    // Handle any other errors
+    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
 });
 /// visitor can view their data by insert their name
