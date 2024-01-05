@@ -127,7 +127,7 @@
  */
 
 /**
- * @swagger
+ * @openapi
  * /create/visitor/user:
  *   post:
  *     tags:
@@ -252,7 +252,7 @@
  */
 
 /**
- * @swagger
+ * @openapi
  * /approve/visitor/{visitorId}:
  *   post:
  *     tags:

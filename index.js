@@ -434,3 +434,22 @@ function verifyToken(req, res, next) {
     next();
   });
 }
+
+function verifySecurityToken(req, res, next) {
+  let header = req.headers.authorization;
+  if (!header) {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+
+  let token = header.split(' ')[1];
+
+  jwt.verify(token, 'mypassword', function (err, decoded) {
+    if (err) {
+      res.status(401).send('Unauthorized');
+      return;
+    }
+    req.user = decoded;
+    next();
+  });
+}
