@@ -166,15 +166,52 @@
  * @swagger
  * /view/visitor/user:
  *   get:
- *     summary: View visitors created by a particular user
- *     tags: [User Management]
+ *     summary: View visitors created by a user
+ *     description: Retrieves a list of visitors that were created by the authenticated user.
+ *     tags:
+ *       - Visitor
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       '200':
- *         description: List of visitors created by the authenticated user
+ *         description: A list of visitors created by the user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 visitors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       visitorname:
+ *                         type: string
+ *                       checkintime:
+ *                         type: string
+ *                         format: date-time
+ *                       checkouttime:
+ *                         type: string
+ *                         format: date-time
+ *                       temperature:
+ *                         type: number
+ *                       gender:
+ *                         type: string
+ *                       ethnicity:
+ *                         type: string
+ *                       age:
+ *                         type: integer
+ *                       phonenumber:
+ *                         type: string
+ *       '401':
+ *         description: Unauthorized. Token is missing or invalid.
+ *       '404':
+ *         description: User not found.
  *       '500':
- *         description: Internal Server Error
+ *         description: Internal Server Error.
  */
 /**
  * @swagger

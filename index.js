@@ -157,19 +157,27 @@ app.post('/create/visitor/user', verifyToken, async (req, res) => {
 app.get('/view/visitor/user', verifyToken, async (req, res) => {
   try {
     const username = req.user.username; // Get the username from the decoded token
-    const result = await client
+    
+    // Retrieve the user's document, which includes the visitors array
+    const userWithVisitors = await client
       .db('benr2423')
-      .collection('visitor')
-      .find({ createdBy: username }) // Retrieve visitors created by the authenticated user
-      .toArray();
+      .collection('users')
+      .findOne(
+        { username: username },
+        { projection: { visitors: 1, _id: 0 } } // Only retrieve the visitors field
+      );
 
-    res.send(result);
+    if (!userWithVisitors) {
+      return res.status(404).send({ success: false, message: "User not found" });
+    }
+
+    // Send the visitors array if it exists, otherwise send an empty array
+    res.status(200).send({ success: true, visitors: userWithVisitors.visitors || [] });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send({ success: false, message: "Internal Server Error" });
   }
 });
-
 
 /// user update its visitor info
 app.put('/update/visitor/:visitorname', verifyToken, async (req, res) => {
