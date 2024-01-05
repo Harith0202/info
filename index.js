@@ -68,7 +68,6 @@ app.post('/register/user', async (req, res) => {
       password: req.body.password,
       name: req.body.name,
       email: req.body.email,
-      phonenumber: req.body.phonenumber,
     };
 
     const result = await register(userData);
@@ -141,7 +140,7 @@ app.post('/login/user', (req, res) => {
 ///user create visitor 
 app.post('/create/visitor/user', verifyToken, async (req, res) => {
   const createdBy = req.user.username; // Get the username from the decoded token
-  let result = await createVisitor(
+  let result = createvisitor(
     req.body.visitorname,
     req.body.checkintime,
     req.body.checkouttime,
@@ -252,7 +251,7 @@ async function loginuser(reqUsername, reqPassword) {
 async function register(userData) {
   try {
     // Basic input validation
-    if (!userData.username || !userData.password || !userData.name || !userData.email || !userData.phonenumber) {
+    if (!userData.username || !userData.password || !userData.name || !userData.email) {
       throw new Error('Incomplete user data. Please provide all required fields.');
     }
 
@@ -285,45 +284,20 @@ async function register(userData) {
 }
 }
 ///create visitor 
-async function createVisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
-  // Update the user's document in the user collection
-  await client.db('benr2423').collection('users').updateOne(
-    { "username": createdBy },
-    { 
-      $push: {
-        "visitors": {
-          "visitorname": reqVisitorname,
-          "checkintime": reqCheckintime,
-          "checkouttime": reqCheckouttime,
-          "temperature":reqTemperature,
-          "gender":reqGender,
-          "ethnicity":reqEthnicity,
-          "age":reqAge,
-        }
-      }
-    }
-  );
-
-  // Generate a new token (assuming you have a function to generate a token)
-  const newToken = generateNewToken(); // Replace with your token generation logic
-
-  return { message: "Visitor created", token: newToken };
+function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
+  client.db('benr2423').collection('visitor').insertOne({
+    "visitorname": reqVisitorname,
+    "checkintime": reqCheckintime,
+    "checkouttime": reqCheckouttime,
+    "temperature":reqTemperature,
+    "gender":reqGender,
+    "ethnicity":reqEthnicity,
+    "age":reqAge,
+    "phonenumber":ReqPhonenumber,
+    "createdBy": createdBy // Add the createdBy field with the username
+  });
+  return "visitor created";
 }
-
-app.get('/get/user/phonenumber', verifyToken, async (req, res) => {
-  try {
-    const username = req.user.username; // Username is extracted from the decoded token
-    const user = await client.db('benr2423').collection('users').findOne({ "username": username });
-    
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json({ phoneNumber: user.phoneNumber }); // Assuming phoneNumber is stored in the user document
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
 
 const jwt = require('jsonwebtoken');
 

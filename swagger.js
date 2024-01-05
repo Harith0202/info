@@ -36,15 +36,11 @@
  *                 type: string
  *               email:
  *                 type: string
- *               phonenumber:
- *                 type: string
- *                 example: '+1234567890'
  *             required:
  *               - username
  *               - password
  *               - name
  *               - email
- *               - phonenumber
  *     responses:
  *       201:
  *         description: User created successfully
@@ -134,61 +130,37 @@
  * @swagger
  * /create/visitor/user:
  *   post:
- *     summary: Create a visitor entry for a user
- *     description: Creates a new visitor record and associates it with the user identified by the JWT token.
- *     tags:
- *       - Visitor
+ *     summary: Create a visitor (User)
+ *     tags: [User Management]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
+ *       description: Visitor information
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - visitorname
- *               - checkintime
- *               - checkouttime
- *               - temperature
- *               - gender
- *               - ethnicity
- *               - age
- *               - phonenumber
  *             properties:
  *               visitorname:
  *                 type: string
- *                 example: John Doe
  *               checkintime:
  *                 type: string
- *                 format: date-time
- *                 example: '2024-01-01T10:00:00Z'
  *               checkouttime:
  *                 type: string
- *                 format: date-time
- *                 example: '2024-01-01T12:00:00Z'
  *               temperature:
  *                 type: number
- *                 example: 36.6
  *               gender:
  *                 type: string
- *                 example: Male
  *               ethnicity:
  *                 type: string
- *                 example: Caucasian
  *               age:
- *                 type: integer
- *                 example: 30
+ *                 type: number
  *               phonenumber:
  *                 type: string
- *                 example: '+1234567890'
  *     responses:
- *       200:
- *         description: Visitor entry created successfully.
- *       401:
- *         description: Unauthorized. Token is missing or invalid.
- *       500:
- *         description: Server error.
+ *       '200':
+ *         description: Visitor created successfully
  */
 /**
  * @swagger
@@ -269,38 +241,4 @@
  *         description: Internal Server Error
  */
 
-/**
- * @swagger
- * /get/user/phonenumber:
- *   get:
- *     summary: Get User's Phone Number
- *     description: Retrieve the phone number of the user associated with the provided JWT token.
- *     tags:
- *       - User
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       '200':
- *         description: Successfully retrieved the phone number.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 phoneNumber:
- *                   type: string
- *                   example: "+1234567890"
- *       '401':
- *         description: Unauthorized. Token is missing or invalid.
- *       '404':
- *         description: User not found.
- *       '500':
- *         description: Server error.
- *
- * components:
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- */
+
