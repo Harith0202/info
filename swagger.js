@@ -166,8 +166,8 @@
  * @swagger
  * /retrieve/visitortoken:
  *   post:
- *     summary: Retrieve a visitor's token
- *     description: Allows a visitor to retrieve their token by providing their name and phone number.
+ *     summary: Retrieve existing visitor token
+ *     description: Allows a visitor to retrieve their previously generated token by providing their unique identifier.
  *     tags:
  *       - Visitor
  *     requestBody:
@@ -185,7 +185,7 @@
  *                 example: '+1234567890'
  *     responses:
  *       '200':
- *         description: Successfully retrieved the visitor token.
+ *         description: Successfully retrieved the existing visitor token.
  *         content:
  *           application/json:
  *             schema:
@@ -198,7 +198,7 @@
  *                   type: string
  *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *       '404':
- *         description: Visitor not found or no visit scheduled with this information.
+ *         description: Visitor not found or no matching token for the provided details.
  *       '500':
  *         description: Internal Server Error.
  */

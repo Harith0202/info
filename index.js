@@ -207,30 +207,34 @@ app.put('/update/visitor/:visitorname', verifyToken, async (req, res) => {
 
 //retrieve token
 app.post('/retrieve/visitortoken', async (req, res) => {
-  try {
-    // Visitors authenticate with their name and phone number, for example
-    const { visitorname, phonenumber } = req.body;
+  const { visitorname, phonenumber } = req.body;
 
-    // Find the visitor within the users' documents based on visitor name and phone number
-    const userWithVisitor = await client.db('benr2423').collection('users').findOne({
-      "visitors.visitorname": visitorname,
-      "visitors.phonenumber": phonenumber
+  try {
+    // Find the user document where this visitor's information is stored
+    const user = await client.db('benr2423').collection('users').findOne({
+      "visitors": {
+        $elemMatch: {
+          "visitorname": visitorname,
+          "phonenumber": phonenumber
+        }
+      }
     });
 
-    // If the visitor is found within a user's document
-    if (userWithVisitor) {
-      // Find the specific visitor object
-      const visitor = userWithVisitor.visitors.find(visitor => visitor.visitorname === visitorname && visitor.phonenumber === phonenumber);
-      if (visitor) {
-        // Generate a token for the visitor
-        const visitorToken = generateVisitorToken(visitor);
-        res.json({ success: true, visitorToken });
-      } else {
-        res.status(404).json({ success: false, message: "Visitor not found" });
-      }
-    } else {
-      res.status(404).json({ success: false, message: "No visit scheduled with this information" });
+    // If no user or visitor is found with the given details
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Visitor details not found.' });
     }
+
+    // Retrieve the visitor's details including the token
+    const visitor = user.visitors.find(v => v.visitorname === visitorname && v.phonenumber === phonenumber);
+
+    if (!visitor) {
+      return res.status(404).json({ success: false, message: 'Visitor details not found.' });
+    }
+
+    // Return the original token that was generated for the visitor
+    res.json({ success: true, visitorToken: visitor.token });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
