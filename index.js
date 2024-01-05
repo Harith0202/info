@@ -299,7 +299,6 @@ async function createVisitor(reqVisitorname, reqCheckintime, reqCheckouttime,req
           "gender":reqGender,
           "ethnicity":reqEthnicity,
           "age":reqAge,
-          "phonenumber":ReqPhonenumber
         }
       }
     }
