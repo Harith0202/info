@@ -140,7 +140,7 @@ app.post('/login/user', (req, res) => {
 ///user create visitor 
 app.post('/create/visitor/user', verifyToken, async (req, res) => {
   const createdBy = req.user.username; // Get the username from the decoded token
-  let result = createvisitor(
+  let result = await createvisitor(
     req.body.visitorname,
     req.body.checkintime,
     req.body.checkouttime,
@@ -150,10 +150,9 @@ app.post('/create/visitor/user', verifyToken, async (req, res) => {
     req.body.age,
     req.body.phonenumber,
     createdBy
-  );   
-  res.send(result);
+  );
+  res.status(result.success ? 200 : 400).json(result);
 });
-
 ///view visitor that has been create by particular user 
 app.get('/view/visitor/user', verifyToken, async (req, res) => {
   try {
@@ -284,21 +283,40 @@ async function register(userData) {
 }
 }
 ///create visitor 
-function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
-  client.db('benr2423').collection('visitor').insertOne({
-    "visitorname": reqVisitorname,
-    "checkintime": reqCheckintime,
-    "checkouttime": reqCheckouttime,
-    "temperature":reqTemperature,
-    "gender":reqGender,
-    "ethnicity":reqEthnicity,
-    "age":reqAge,
-    "phonenumber":ReqPhonenumber,
-    "createdBy": createdBy // Add the createdBy field with the username
-  });
-  return "visitor created";
-}
+async function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, reqTemperature, reqGender, reqEthnicity, reqAge, ReqPhonenumber, createdBy) {
+  try {
+    // Define the visitor object
+    const visitor = {
+      "visitorname": reqVisitorname,
+      "checkintime": reqCheckintime,
+      "checkouttime": reqCheckouttime,
+      "temperature": reqTemperature,
+      "gender": reqGender,
+      "ethnicity": reqEthnicity,
+      "age": reqAge,
+      "phonenumber": ReqPhonenumber
+    };
 
+    // Push the visitor object to the visitors array of the user who created the visitor
+    const updateResult = await client.db('benr2423').collection('users').updateOne(
+      { "username": createdBy },
+      { $push: { "visitors": visitor } }
+    );
+
+    // Check if the update was successful
+    if (updateResult.matchedCount === 0) {
+      return { success: false, message: "User not found" };
+    }
+    if (updateResult.modifiedCount === 0) {
+      return { success: false, message: "Failed to add visitor to the user" };
+    }
+
+    return { success: true, message: "Visitor created" };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: "Failed to create visitor: " + error.message };
+  }
+}
 const jwt = require('jsonwebtoken');
 
 function generateToken(userData) {
