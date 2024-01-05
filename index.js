@@ -68,6 +68,7 @@ app.post('/register/user', async (req, res) => {
       password: req.body.password,
       name: req.body.name,
       email: req.body.email,
+      phonenumber: req.body.phonenumber,
     };
 
     const result = await register(userData);
@@ -251,7 +252,7 @@ async function loginuser(reqUsername, reqPassword) {
 async function register(userData) {
   try {
     // Basic input validation
-    if (!userData.username || !userData.password || !userData.name || !userData.email) {
+    if (!userData.username || !userData.password || !userData.name || !userData.email || !userData.phonenumber) {
       throw new Error('Incomplete user data. Please provide all required fields.');
     }
 

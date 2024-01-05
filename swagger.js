@@ -130,37 +130,67 @@
  * @swagger
  * /create/visitor/user:
  *   post:
- *     summary: Create a visitor (User)
- *     tags: [User Management]
+ *     summary: Create a visitor entry for a user
+ *     description: Creates a new visitor record and associates it with the user identified by the JWT token.
+ *     tags:
+ *       - Visitor
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
- *       description: Visitor information
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - visitorname
+ *               - checkintime
+ *               - checkouttime
+ *               - temperature
+ *               - gender
+ *               - ethnicity
+ *               - age
+ *               - phonenumber
  *             properties:
  *               visitorname:
  *                 type: string
+ *                 example: John Doe
  *               checkintime:
  *                 type: string
+ *                 format: date-time
+ *                 example: '2024-01-01T10:00:00Z'
  *               checkouttime:
  *                 type: string
+ *                 format: date-time
+ *                 example: '2024-01-01T12:00:00Z'
  *               temperature:
  *                 type: number
+ *                 example: 36.6
  *               gender:
  *                 type: string
+ *                 example: Male
  *               ethnicity:
  *                 type: string
+ *                 example: Caucasian
  *               age:
- *                 type: number
+ *                 type: integer
+ *                 example: 30
  *               phonenumber:
  *                 type: string
+ *                 example: '+1234567890'
  *     responses:
- *       '200':
- *         description: Visitor created successfully
+ *       200:
+ *         description: Visitor entry created successfully.
+ *       401:
+ *         description: Unauthorized. Token is missing or invalid.
+ *       500:
+ *         description: Server error.
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  */
 /**
  * @swagger
