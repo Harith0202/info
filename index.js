@@ -139,19 +139,27 @@ app.post('/login/user', (req, res) => {
 
 ///user create visitor 
 app.post('/create/visitor/user', verifyToken, async (req, res) => {
-  const createdBy = req.user.username; // Get the username from the decoded token
-  let result = createvisitor(
-    req.body.visitorname,
-    req.body.checkintime,
-    req.body.checkouttime,
-    req.body.temperature,
-    req.body.gender,
-    req.body.ethnicity,
-    req.body.age,
-    req.body.phonenumber,
-    createdBy
-  );   
-  res.send(result);
+  try {
+    const createdBy = req.user.username; // Get the username from the decoded token
+
+    // Add the visitor to a pending collection or with a pending status
+    let result = await addVisitorToPending(
+      req.body.visitorname,
+      req.body.checkintime,
+      req.body.checkouttime,
+      req.body.temperature,
+      req.body.gender,
+      req.body.ethnicity,
+      req.body.age,
+      req.body.phonenumber,
+      createdBy
+    );
+
+    res.status(201).json({ success: true, message: "Visitor added to pending approval list", data: result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
 });
 
 ///view visitor that has been create by particular user 
@@ -284,19 +292,115 @@ async function register(userData) {
 }
 }
 ///create visitor 
-function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
-  client.db('benr2423').collection('visitor').insertOne({
+function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, reqTemperature, reqGender, reqEthnicity, reqAge, ReqPhonenumber, createdBy) {
+  // Insert the visitor data into a 'pendingVisitors' collection or with a 'status' field
+  client.db('benr2423').collection('pendingVisitors').insertOne({
     "visitorname": reqVisitorname,
     "checkintime": reqCheckintime,
     "checkouttime": reqCheckouttime,
-    "temperature":reqTemperature,
-    "gender":reqGender,
-    "ethnicity":reqEthnicity,
-    "age":reqAge,
-    "phonenumber":ReqPhonenumber,
-    "createdBy": createdBy // Add the createdBy field with the username
+    "temperature": reqTemperature,
+    "gender": reqGender,
+    "ethnicity": reqEthnicity,
+    "age": reqAge,
+    "phonenumber": ReqPhonenumber,
+    "createdBy": createdBy, // Add the createdBy field with the username
+    "status": "pending" // Mark the visitor as pending approval
   });
-  return "visitor created";
+  return "Visitor added to pending approval list.";
+}
+
+app.post('/approve/visitor/:visitorId', verifySecurityToken, async (req, res) => {
+  try {
+    const visitorId = req.params.visitorId;
+    const approvedBy = req.user.username; // Assuming security personnel also have an account
+
+    // Function to approve visitor
+    let result = await approveVisitor(visitorId, approvedBy);
+
+    res.status(200).json({ success: true, message: "Visitor approved", data: result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+async function approveVisitor(visitorId, approvedBy) {
+  try {
+    // Assuming `visitorId` is a unique identifier for the visitor document
+    const filter = { _id: visitorId, status: 'pending' }; // Filter to find the visitor with the given ID and status 'pending'
+    const updateDoc = {
+      $set: {
+        status: 'approved', // Update status to 'approved'
+        approvedBy: approvedBy, // Record who approved the visitor
+        approvedAt: new Date() // Record when the visitor was approved
+      }
+    };
+
+    // Update the visitor in the database
+    const result = await client.db('benr2423').collection('pendingVisitors').updateOne(filter, updateDoc);
+
+    // Check if the update was successful
+    if (result.matchedCount === 0) {
+      throw new Error('No pending visitor found with the provided ID.');
+    }
+    if (result.modifiedCount === 0) {
+      throw new Error('The visitor was not updated. This may be due to an internal error.');
+    }
+
+    return { success: true, message: "Visitor approved successfully." };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: error.message };
+  }
+}
+
+async function addVisitorToPending(reqVisitorname, reqCheckintime, reqCheckouttime, reqTemperature, reqGender, reqEthnicity, reqAge, ReqPhonenumber, createdBy) {
+  try {
+    // Visitor object with all necessary details
+    const visitorData = {
+      "visitorname": reqVisitorname,
+      "checkintime": reqCheckintime,
+      "checkouttime": reqCheckouttime,
+      "temperature": reqTemperature,
+      "gender": reqGender,
+      "ethnicity": reqEthnicity,
+      "age": reqAge,
+      "phonenumber": ReqPhonenumber,
+      "createdBy": createdBy,
+      "status": "pending" // Marking the visitor as pending for approval
+    };
+
+    // Insert the visitor data into the 'pendingVisitors' collection
+    const result = await client.db('benr2423').collection('pendingVisitors').insertOne(visitorData);
+
+    // Check if the insertion was successful
+    if (!result.acknowledged || !result.insertedId) {
+      throw new Error('Failed to add the visitor to pending list.');
+    }
+
+    // Return success message along with the inserted visitor data
+    return { success: true, message: "Visitor added to pending approval list.", data: visitorData };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: error.message };
+  }
+}
+
+function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, reqTemperature, reqGender, reqEthnicity, reqAge, ReqPhonenumber, createdBy) {
+  // Insert the visitor data into a 'pendingVisitors' collection or with a 'status' field
+  client.db('benr2423').collection('pendingVisitors').insertOne({
+    "visitorname": reqVisitorname,
+    "checkintime": reqCheckintime,
+    "checkouttime": reqCheckouttime,
+    "temperature": reqTemperature,
+    "gender": reqGender,
+    "ethnicity": reqEthnicity,
+    "age": reqAge,
+    "phonenumber": ReqPhonenumber,
+    "createdBy": createdBy, // Add the createdBy field with the username
+    "status": "pending" // Mark the visitor as pending approval
+  });
+  return "Visitor added to pending approval list.";
 }
 
 const jwt = require('jsonwebtoken');
