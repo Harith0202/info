@@ -255,6 +255,13 @@ async function register(userData) {
       throw new Error('Incomplete user data. Please provide all required fields.');
     }
 
+    // Strong password validation
+    // Require at least one number, one lowercase, one uppercase letter, and one special character
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/;
+    if (!passwordRegex.test(userData.password)) {
+      throw new Error('Password must contain at least one number, one lowercase, one uppercase letter, and one special symbol.');
+    }
+
     // Check if the username is already taken
     const existingUser = await client.db('benr2423').collection('users').findOne({ username: userData.username });
     if (existingUser) {
@@ -273,7 +280,7 @@ async function register(userData) {
     return { success: true, message: "Account created" };
   } catch (error) {
     // Return detailed error message in case of any issues
-    return { success: false, message: error.message };
+    return { success: false, message: error.message };
 }
 }
 ///create visitor 
