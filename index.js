@@ -205,6 +205,37 @@ app.put('/update/visitor/:visitorname', verifyToken, async (req, res) => {
   }
 });
 
+//retrieve token
+app.post('/retrieve/visitortoken', async (req, res) => {
+  try {
+    // Visitors authenticate with their name and phone number, for example
+    const { visitorname, phonenumber } = req.body;
+
+    // Find the visitor within the users' documents based on visitor name and phone number
+    const userWithVisitor = await client.db('benr2423').collection('users').findOne({
+      "visitors.visitorname": visitorname,
+      "visitors.phonenumber": phonenumber
+    });
+
+    // If the visitor is found within a user's document
+    if (userWithVisitor) {
+      // Find the specific visitor object
+      const visitor = userWithVisitor.visitors.find(visitor => visitor.visitorname === visitorname && visitor.phonenumber === phonenumber);
+      if (visitor) {
+        // Generate a token for the visitor
+        const visitorToken = generateVisitorToken(visitor);
+        res.json({ success: true, visitorToken });
+      } else {
+        res.status(404).json({ success: false, message: "Visitor not found" });
+      }
+    } else {
+      res.status(404).json({ success: false, message: "No visit scheduled with this information" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
 /// visitor can view their data by insert their name
 app.get('/view/visitor/:visitorName', async (req, res) => {
   const visitorName = req.params.visitorName;
