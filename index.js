@@ -287,7 +287,7 @@ async function register(userData) {
 ///create visitor 
 async function createVisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
   // Update the user's document in the user collection
-  await client.db('benr2423').collection('user').updateOne(
+  await client.db('benr2423').collection('users').updateOne(
     { "username": createdBy },
     { 
       $push: {
@@ -314,7 +314,7 @@ async function createVisitor(reqVisitorname, reqCheckintime, reqCheckouttime,req
 app.get('/get/user/phonenumber', verifyToken, async (req, res) => {
   try {
     const username = req.user.username; // Username is extracted from the decoded token
-    const user = await client.db('benr2423').collection('user').findOne({ "username": username });
+    const user = await client.db('benr2423').collection('users').findOne({ "username": username });
     
     if (!user) {
       return res.status(404).json({ message: 'User not found' });

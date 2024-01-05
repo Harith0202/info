@@ -185,12 +185,6 @@
  *         description: Unauthorized. Token is missing or invalid.
  *       500:
  *         description: Server error.
- * components:
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
  */
 /**
  * @swagger
