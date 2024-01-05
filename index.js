@@ -210,36 +210,34 @@ app.post('/retrieve/visitortoken', async (req, res) => {
   const { visitorname, phonenumber } = req.body;
 
   try {
-    // Find the user document where this visitor's information is stored
-    const user = await client.db('benr2423').collection('users').findOne({
-      "visitors": {
-        $elemMatch: {
-          "visitorname": visitorname,
-          "phonenumber": phonenumber
-        }
-      }
+    // Assuming the visitor's information is stored under a user document in a 'visitors' array
+    const userWithVisitor = await client.db('benr2423').collection('users').findOne({
+      "visitors.visitorname": visitorname,
+      "visitors.phonenumber": phonenumber
     });
 
-    // If no user or visitor is found with the given details
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'Visitor details not found.' });
-    }
-
-    // Retrieve the visitor's details including the token
-    const visitor = user.visitors.find(v => v.visitorname === visitorname && v.phonenumber === phonenumber);
-
-    if (visitor) {
-      // Respond with the token if the visitor is found
-      res.json({ success: true, visitorToken: visitor.visitorToken });
+    // If the visitor is found within a user's document
+    if (userWithVisitor) {
+      // Retrieve the specific visitor object from the visitors array
+      const visitor = userWithVisitor.visitors.find(v => v.visitorname === visitorname && v.phonenumber === phonenumber);
+      
+      if (visitor) {
+        // Respond with the token if the visitor is found
+        res.json({ success: true, visitorToken: visitor.visitorToken });
+      } else {
+        // Visitor's details were not found in the array
+        res.status(404).json({ success: false, message: 'Visitor not found.' });
+      }
     } else {
-      // Respond with an error if the visitor is not found
-      res.status(404).json({ success: false, message: 'Visitor not found.' });
+      // No user document contains the visitor's details
+      res.status(404).json({ success: false, message: 'No visit scheduled with this information.' });
     }
   } catch (error) {
     // Handle any other errors
     res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
 });
+
 /// visitor can view their data by insert their name
 app.get('/view/visitor/:visitorName', async (req, res) => {
   const visitorName = req.params.visitorName;
