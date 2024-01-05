@@ -162,66 +162,7 @@
  *       '200':
  *         description: Visitor created successfully
  */
-/**
- * @swagger
- * /view/visitor/user:
- *   get:
- *     summary: View visitors associated with the user
- *     description: Retrieves the visitors array from the authenticated user's document.
- *     tags:
- *       - User
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       '200':
- *         description: A list of visitors associated with the user.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 visitors:
- *                   type: array
- *                   description: Array of visitors associated with the user.
- *                   items:
- *                     type: object
- *                     properties:
- *                       visitorname:
- *                         type: string
- *                         example: "John Doe"
- *                       checkintime:
- *                         type: string
- *                         format: date-time
- *                         example: "2024-01-01T10:00:00Z"
- *                       checkouttime:
- *                         type: string
- *                         format: date-time
- *                         example: "2024-01-01T15:00:00Z"
- *                       temperature:
- *                         type: number
- *                         example: 36.6
- *                       gender:
- *                         type: string
- *                         example: "Male"
- *                       ethnicity:
- *                         type: string
- *                         example: "Caucasian"
- *                       age:
- *                         type: integer
- *                         example: 30
- *                       phonenumber:
- *                         type: string
- *                         example: "+1234567890"
- *       '401':
- *         description: Unauthorized. Token is missing or invalid.
- *       '404':
- *         description: User not found or no visitors associated with the user.
- *       '500':
- *         description: Internal Server Error.
- */
+
 /**
  * @swagger
  * /update/visitor/{visitorname}:
