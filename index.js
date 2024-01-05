@@ -140,7 +140,7 @@ app.post('/login/user', (req, res) => {
 ///user create visitor 
 app.post('/create/visitor/user', verifyToken, async (req, res) => {
   const createdBy = req.user.username; // Get the username from the decoded token
-  let result = createvisitor(
+  let result = await createVisitor(
     req.body.visitorname,
     req.body.checkintime,
     req.body.checkouttime,
@@ -284,20 +284,46 @@ async function register(userData) {
 }
 }
 ///create visitor 
-function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
-  client.db('benr2423').collection('visitor').insertOne({
-    "visitorname": reqVisitorname,
-    "checkintime": reqCheckintime,
-    "checkouttime": reqCheckouttime,
-    "temperature":reqTemperature,
-    "gender":reqGender,
-    "ethnicity":reqEthnicity,
-    "age":reqAge,
-    "phonenumber":ReqPhonenumber,
-    "createdBy": createdBy // Add the createdBy field with the username
-  });
-  return "visitor created";
+async function createVisitor(reqVisitorname, reqCheckintime, reqCheckouttime,reqTemperature,reqGender,reqEthnicity,reqAge,ReqPhonenumber, createdBy) {
+  // Update the user's document in the user collection
+  await client.db('benr2423').collection('user').updateOne(
+    { "username": createdBy },
+    { 
+      $push: {
+        "visitors": {
+          "visitorname": reqVisitorname,
+          "checkintime": reqCheckintime,
+          "checkouttime": reqCheckouttime,
+          "temperature":reqTemperature,
+          "gender":reqGender,
+          "ethnicity":reqEthnicity,
+          "age":reqAge,
+          "phonenumber":ReqPhonenumber
+        }
+      }
+    }
+  );
+
+  // Generate a new token (assuming you have a function to generate a token)
+  const newToken = generateNewToken(); // Replace with your token generation logic
+
+  return { message: "Visitor created", token: newToken };
 }
+
+app.get('/get/user/phonenumber', verifyToken, async (req, res) => {
+  try {
+    const username = req.user.username; // Username is extracted from the decoded token
+    const user = await client.db('benr2423').collection('user').findOne({ "username": username });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ phoneNumber: user.phoneNumber }); // Assuming phoneNumber is stored in the user document
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 const jwt = require('jsonwebtoken');
 

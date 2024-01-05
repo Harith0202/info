@@ -241,4 +241,38 @@
  *         description: Internal Server Error
  */
 
-
+/**
+ * @swagger
+ * /get/user/phonenumber:
+ *   get:
+ *     summary: Get User's Phone Number
+ *     description: Retrieve the phone number of the user associated with the provided JWT token.
+ *     tags:
+ *       - User
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved the phone number.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 phoneNumber:
+ *                   type: string
+ *                   example: "+1234567890"
+ *       '401':
+ *         description: Unauthorized. Token is missing or invalid.
+ *       '404':
+ *         description: User not found.
+ *       '500':
+ *         description: Server error.
+ *
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
