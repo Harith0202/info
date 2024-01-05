@@ -290,6 +290,7 @@ async function register(userData) {
     return { success: false, message: error.message };
 }
 }
+
 ///create visitor 
 async function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, reqTemperature, reqGender, reqEthnicity, reqAge, ReqPhonenumber, createdBy) {
   try {
@@ -311,7 +312,6 @@ async function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, re
       { $push: { "visitors": visitor } }
     );
 
-    // Check if the update was successful
     if (updateResult.matchedCount === 0) {
       return { success: false, message: "User not found" };
     }
@@ -319,12 +319,16 @@ async function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, re
       return { success: false, message: "Failed to add visitor to the user" };
     }
 
-    return { success: true, message: "Visitor created" };
+    // Issue a token for the visitor pass
+    const visitorPassToken = generateVisitorToken(visitor);
+
+    return { success: true, message: "Visitor created", visitorPassToken: visitorPassToken };
   } catch (error) {
     console.error(error);
     return { success: false, message: "Failed to create visitor: " + error.message };
   }
 }
+
 const jwt = require('jsonwebtoken');
 
 function generateToken(userData) {
@@ -355,4 +359,15 @@ function verifyToken(req, res, next) {
     req.user = decoded;
     next();
   });
+}
+
+// Function to generate a visitor pass token
+function generateVisitorToken(visitorData) {
+  const visitorToken = jwt.sign(
+    visitorData,
+    'visitorSecretPassword', // Ensure you use a secure, environment-specific password
+    { expiresIn: '1d' } // Set an appropriate expiration time for the visitor pass
+  );
+
+  return visitorToken;
 }
