@@ -36,11 +36,15 @@
  *                 type: string
  *               email:
  *                 type: string
+ *               phonenumber:
+ *                 type: string
+ *                 example: '+1234567890'
  *             required:
  *               - username
  *               - password
  *               - name
  *               - email
+ *               - phonenumber
  *     responses:
  *       201:
  *         description: User created successfully
