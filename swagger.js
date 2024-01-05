@@ -127,14 +127,15 @@
  */
 
 /**
- * @openapi
+ * @swagger
  * /create/visitor/user:
  *   post:
- *     tags:
- *       - Visitor Management
- *     summary: Add a visitor to the pending list
- *     description: Add a new visitor to the pending approval list.
+ *     summary: Create a visitor (User)
+ *     tags: [User Management]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
+ *       description: Visitor information
  *       required: true
  *       content:
  *         application/json:
@@ -154,23 +155,12 @@
  *               ethnicity:
  *                 type: string
  *               age:
- *                 type: integer
+ *                 type: number
  *               phonenumber:
  *                 type: string
- *             required:
- *               - visitorname
- *               - checkintime
- *               - checkouttime
- *               - temperature
- *               - gender
- *               - ethnicity
- *               - age
- *               - phonenumber
  *     responses:
- *       201:
- *         description: Visitor added to pending approval list.
- *       500:
- *         description: Internal server error.
+ *       '200':
+ *         description: Visitor created successfully
  */
 /**
  * @swagger
@@ -250,28 +240,5 @@
  *       '500':
  *         description: Internal Server Error
  */
-
-/**
- * @openapi
- * /approve/visitor/{visitorId}:
- *   post:
- *     tags:
- *       - Visitor Approval
- *     summary: Approve a pending visitor
- *     description: Approve a visitor who is currently in the pending state.
- *     parameters:
- *       - in: path
- *         name: visitorId
- *         required: true
- *         schema:
- *           type: string
- *         description: The unique ID of the visitor to be approved.
- *     responses:
- *       200:
- *         description: Visitor approved successfully.
- *       500:
- *         description: Internal server error.
- */
-
 
 
