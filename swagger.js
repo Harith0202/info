@@ -31,6 +31,7 @@
  *                 type: string
  *               password:
  *                 type: string
+ *                 description: Password must be at least 8 characters long and contain at least one number, one lowercase letter, one uppercase letter, and one special symbol.
  *               name:
  *                 type: string
  *               email:
@@ -48,6 +49,7 @@
  *       500:
  *         description: Internal server error
  */
+
 
 /**
  * @swagger
