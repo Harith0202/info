@@ -223,7 +223,7 @@ app.post('/retrieve/visitortoken', async (req, res) => {
       
       if (visitor) {
         // Respond with the token if the visitor is found
-        res.json({ success: true, visitorToken: visitorToken });
+        res.json({ success: true, visitorToken: visitor.token });
       } else {
         // Visitor's details were not found in the array
         res.status(404).json({ success: false, message: 'Visitor not found.' });
