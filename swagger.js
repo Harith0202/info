@@ -18,6 +18,8 @@
  *   post:
  *     tags:
  *       - User Management
+ *      security:
+ *       - BearerAuth: []
  *     summary: Register a new user
  *     description: This endpoint is for creating a new user account.
  *     requestBody:
