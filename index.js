@@ -132,8 +132,7 @@ app.post('/login/admin', (req, res) => {
   loginadmin(req.body.username, req.body.password)
     .then(result => {
       if (result.message === 'Correct password') {
-        // Generate token with role set to 'administrator'
-        const token = generateToken({ username: req.body.username }, 'administrator');
+        const token = generateToken({ username: req.body.username });
         res.send({ message: 'Successful login', token });
       } else {
         res.send('Login unsuccessful');
@@ -490,16 +489,11 @@ app.get('/get/userphonenumber', async (req, res) => {
 
 const jwt = require('jsonwebtoken');
 
-function generateToken(userData, role) {
-  const tokenPayload = {
-    username: userData.username,
-    role: role // Include the role in the token payload
-  };
-  
+function generateToken(userData) {
   const token = jwt.sign(
-    tokenPayload,
-    'mypassword', // This should be an environment-specific secret
-    { expiresIn: '1h' } // Set an appropriate expiration time for the token
+    userData,
+    'mypassword',
+    { expiresIn: 600 }
   );
 
   console.log(token);
@@ -509,20 +503,17 @@ function generateToken(userData, role) {
 function verifyToken(req, res, next) {
   let header = req.headers.authorization;
   if (!header) {
-    return res.status(401).send('Unauthorized');
+    res.status(401).send('Unauthorized');
+    return;
   }
 
   let token = header.split(' ')[1];
+
   jwt.verify(token, 'mypassword', function (err, decoded) {
     if (err) {
-      return res.status(401).send('Unauthorized');
+      res.status(401).send('Unauthorized');
+      return;
     }
-    
-    // Check if the role in the token is 'administrator'
-    if (decoded.role !== 'administrator') {
-      return res.status(403).send('Forbidden: Insufficient privileges');
-    }
-
     req.user = decoded;
     next();
   });
