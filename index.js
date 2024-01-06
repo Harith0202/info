@@ -127,7 +127,7 @@ app.post('/login/security', (req, res) => {
 });
 
 //admin login to the admin account, if successfully login it will get a token for do other operation the admin can do
-app.post('/login/admin', verifyAdminToken, (req, res) => {
+app.post('/login/admin', (req, res) => {
   console.log(req.body);
   loginadmin(req.body.username, req.body.password)
     .then(result => {
