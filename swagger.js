@@ -300,15 +300,15 @@
  * @swagger
  * /get/userphonenumber:
  *   get:
- *     summary: Retrieve user's phone number using visitor token
- *     description: Allows security personnel to retrieve the phone number of the user associated with a given visitor token.
+ *     summary: Retrieve the visitor's destination using visitor token
+ *     description: Allows security personnel to retrieve the detail of the user associated with a given visitor token.
  *     tags:
  *       - Security
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       '200':
- *         description: Successfully retrieved the user's phone number.
+ *         description: Successfully retrieved the visitor's destination.
  *         content:
  *           application/json:
  *             schema:
@@ -317,9 +317,6 @@
  *                 success:
  *                   type: boolean
  *                   example: true
- *                 phoneNumber:
- *                   type: string
- *                   example: "+1234567890"
  *                 visitor of:
  *                   type: string
  *       '401':
