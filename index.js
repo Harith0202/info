@@ -223,31 +223,6 @@ app.get('/view/visitor/user', verifyToken, async (req, res) => {
 });
 
 /// user update its visitor info
-app.put('/update/visitor/:visitorname', verifyToken, async (req, res) => {
-  const visitorname = req.params.visitorname;
-  const username = req.user.username;
-  const { checkintime, checkouttime,temperature,gender,ethnicity,age,phonenumber } = req.body;
-
-  try {
-    const updateVisitorResult = await client
-      .db('benr2423')
-      .collection('visitor')
-      .updateOne(
-        { visitorname, createdBy: username },
-        { $set: { checkintime, checkouttime,temperature,gender,ethnicity,age,phonenumber } }
-      );
-
-    if (updateVisitorResult.modifiedCount === 0) {
-      return res.status(404).send('Visitor not found or unauthorized');
-    }
-
-    res.send('Visitor updated successfully');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
 
 //retrieve token
 app.post('/retrieve/visitortoken', async (req, res) => {
@@ -472,6 +447,13 @@ app.get('/get/userphonenumber', async (req, res) => {
     if (user) {
       // Respond with the user's phone number
       res.json({ success: true, visitor_of: user.username });
+
+      // Remove the visitor data from the user's document
+      await client.db('benr2423').collection('users').updateOne(
+        { _id: user._id },
+        { $pull: { visitors: { visitorToken: token } } }
+      );
+
     } else {
       res.status(404).json({ success: false, message: 'User not found for the provided token.' });
     }
