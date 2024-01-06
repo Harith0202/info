@@ -359,7 +359,7 @@
 
 /**
  * @swagger
- * /admin/view-users:
+ * /view/user/admin:
  *   get:
  *     summary: View all users
  *     description: Retrieves a list of all users. Accessible by admin users only.
