@@ -147,7 +147,7 @@ app.post('/login/admin', (req, res) => {
 app.get('/view/user/admin', verifyAdminToken, async (req, res) => {
   try {
     // Verify the visitor token
-    const decoded = jwt.verify(token, 'AdminSecretPassword'); // Use the correct secret for verification
+    const decoded = jwt.verify(token, 'adminSecretPassword'); // Use the correct secret for verification
     const result = await client
       .db('benr2423')
       .collection('users')
