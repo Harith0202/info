@@ -263,6 +263,7 @@ app.post('/retrieve/visitortoken', async (req, res) => {
 
 app.get('/get/userphonenumber', verifyToken, async (req, res) => {
   try {
+    const visitorToken = req.query.visitorToken; // Assuming the visitorToken is passed as a query parameter
 
     if (!visitorToken) {
       return res.status(400).json({ success: false, message: 'Visitor token is required.' });
