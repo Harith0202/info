@@ -331,11 +331,18 @@
  * /get/userphonenumber:
  *   get:
  *     summary: Retrieve the visitor's destination using visitor token
- *     description: Allows security personnel to retrieve the detail of the user associated with a given visitor token.
+ *     description: Allows security personnel to retrieve the detail of the user associated with a given visitor token. The token must be provided in the Authorization header.
  *     tags:
  *       - Security
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Bearer token for authentication.
  *     responses:
  *       '200':
  *         description: Successfully retrieved the visitor's destination.
@@ -347,7 +354,7 @@
  *                 success:
  *                   type: boolean
  *                   example: true
- *                 visitor of:
+ *                 visitor_of:
  *                   type: string
  *       '401':
  *         description: Unauthorized. Token is missing, invalid, or expired.
