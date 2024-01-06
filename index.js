@@ -286,7 +286,7 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     }
 
     // Respond with the username associated with the visitor token
-    res.json({ success: true, username: user.username });
+    res.json({ success: true, createdBy: user.username });
   } catch (error) {
     // Handle any errors that occur during the process.
     console.error(error);
