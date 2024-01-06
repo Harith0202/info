@@ -513,19 +513,21 @@ function verifyToken(req, res, next) {
   }
 
   let token = header.split(' ')[1];
-  jwt.verify(token, 'mypassword', function (err, decoded) {
+  jwt.verify(token, 'mypassword', (err, decoded) => {
     if (err) {
       return res.status(401).send('Unauthorized');
-    }
-    
-    // Check if the role in the token is 'administrator'
-    if (decoded.role !== 'administrator') {
-      return res.status(403).send('Forbidden: Insufficient privileges');
     }
 
     req.user = decoded;
     next();
   });
+}
+
+function isAdmin(req, res, next) {
+  if (req.user.role !== 'admin') {
+    return res.status(403).send('Forbidden: Insufficient privileges');
+  }
+  next();
 }
 
 // Function to generate a visitor pass token
