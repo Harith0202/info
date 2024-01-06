@@ -68,6 +68,7 @@ app.post('/register/user', async (req, res) => {
       password: req.body.password,
       name: req.body.name,
       email: req.body.email,
+      phonenumber: req.body.phonenumber
     };
 
     const result = await register(userData);
@@ -252,27 +253,6 @@ app.post('/retrieve/visitortoken', async (req, res) => {
   }
 });
 
-/// visitor can view their data by insert their name
-app.get('/view/visitor/:visitorName', async (req, res) => {
-  const visitorName = req.params.visitorName;
-
-  try {
-    const result = await client
-      .db('benr2423')
-      .collection('visitor')
-      .findOne({ visitorname: visitorName });
-
-    if (result) {
-      res.send(result);
-    } else {
-      res.status(404).send('Visitor not found');
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
@@ -305,7 +285,7 @@ async function loginuser(reqUsername, reqPassword) {
 async function register(userData) {
   try {
     // Basic input validation
-    if (!userData.username || !userData.password || !userData.name || !userData.email) {
+    if (!userData.username || !userData.password || !userData.name || !userData.email || !userData.phonenumber) {
       throw new Error('Incomplete user data. Please provide all required fields.');
     }
 

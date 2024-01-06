@@ -36,11 +36,14 @@
  *                 type: string
  *               email:
  *                 type: string
+ *               phonenumber: 
+ *                 type: string
  *             required:
  *               - username
  *               - password
  *               - name
  *               - email
+ *               - phonenumber
  *     responses:
  *       201:
  *         description: User created successfully
@@ -125,7 +128,65 @@
  *                 token:
  *                   type: string
  */
-
+/**
+ * @swagger
+ * /view/visitor/user:
+ *   get:
+ *     summary: View visitors associated with the user
+ *     description: Retrieves a list of visitors that are associated with the authenticated user.
+ *     tags:
+ *       - [User Management]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: A list of visitors associated with the user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 visitors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       visitorname:
+ *                         type: string
+ *                         example: "Jane Doe"
+ *                       checkintime:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2024-01-01T10:00:00Z"
+ *                       checkouttime:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2024-01-01T12:00:00Z"
+ *                       temperature:
+ *                         type: number
+ *                         example: 36.5
+ *                       gender:
+ *                         type: string
+ *                         example: "Female"
+ *                       ethnicity:
+ *                         type: string
+ *                         example: "Hispanic"
+ *                       age:
+ *                         type: integer
+ *                         example: 29
+ *                       phonenumber:
+ *                         type: string
+ *                         example: "+15551234567"
+ *       '401':
+ *         description: Unauthorized. Token is missing or invalid.
+ *       '404':
+ *         description: User not found.
+ *       '500':
+ *         description: Internal Server Error.
+ */
 /**
  * @swagger
  * /create/visitor/user:
@@ -246,26 +307,7 @@
  *       '500':
  *         description: Internal Server Error
  */
-/**
- * @swagger
- * /view/visitor/{visitorName}:
- *   get:
- *     summary: View visitor data by name
- *     tags: [Visitor]
- *     parameters:
- *       - in: path
- *         name: visitorName
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       '200':
- *         description: Visitor data retrieved successfully
- *       '404':
- *         description: Visitor not found
- *       '500':
- *         description: Internal Server Error
- */
+
 /**
  * @swagger
  * /get/userphonenumber:
