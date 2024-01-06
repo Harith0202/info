@@ -228,10 +228,8 @@ app.post('/retrieve/visitortoken', async (req, res) => {
   try {
     // Use aggregation pipeline to match the user document and filter the visitors array
     const pipeline = [
-      {
-        $unwind: "$visitors" // Deconstruct the visitors array
-      },
-      {
+      { $unwind: "$visitors" }, // Deconstruct the visitors array
+      { 
         $match: {
           // Match the specific visitor in the visitors array
           "visitors.visitorname": visitorname,
@@ -242,16 +240,17 @@ app.post('/retrieve/visitortoken', async (req, res) => {
         $project: {
           // Project the necessary fields
           visitorToken: "$visitors.visitorToken",
-          username: 1 // Make sure to adjust this if the username is stored differently
+          username: "$username" // Adjusted to reference the username field
         }
       }
     ];
 
-    const user = await client.db('benr2423').collection('users').aggregate(pipeline).toArray();
+    const results = await client.db('benr2423').collection('users').aggregate(pipeline).toArray();
 
-    if (user.length > 0) {
-      // Assuming there is only one match, take the first element of the array
-      res.json({ success: true, visitorToken: user[0].visitorToken, username: user[0].username });
+    if (results.length > 0) {
+      // Send the first match's details
+      const user = results[0];
+      res.json({ success: true, visitorToken: user.visitorToken, username: user.username });
     } else {
       res.status(404).json({ success: false, message: 'Visitor not found or no token exists.' });
     }
