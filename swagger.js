@@ -156,30 +156,20 @@
  *                     properties:
  *                       visitorname:
  *                         type: string
- *                         example: "Jane Doe"
  *                       checkintime:
  *                         type: string
- *                         format: date-time
- *                         example: "2024-01-01T10:00:00Z"
  *                       checkouttime:
  *                         type: string
- *                         format: date-time
- *                         example: "2024-01-01T12:00:00Z"
  *                       temperature:
  *                         type: number
- *                         example: 36.5
  *                       gender:
  *                         type: string
- *                         example: "Female"
  *                       ethnicity:
  *                         type: string
- *                         example: "Hispanic"
  *                       age:
  *                         type: integer
- *                         example: 29
  *                       phonenumber:
  *                         type: string
- *                         example: "+15551234567"
  *       '401':
  *         description: Unauthorized. Token is missing or invalid.
  *       '404':
@@ -240,10 +230,8 @@
  *             properties:
  *               visitorname:
  *                 type: string
- *                 example: John Doe
  *               phonenumber:
  *                 type: string
- *                 example: '+1234567890'
  *     responses:
  *       '200':
  *         description: Successfully retrieved the existing visitor token.
