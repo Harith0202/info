@@ -85,17 +85,50 @@
  *                 token:
  *                   type: string
  */
+
 /**
  * @swagger
- * /view/visitor/security:
+ * /login/admin:
+ *   post:
+ *     summary: Login for security account
+ *     tags: [administrator]
+ *     requestBody:
+ *       description: adminitrator login credentials
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ */
+
+/**
+ * @swagger
+ * /view/user/admin:
  *   get:
- *     summary: View all visitors (Security)
- *     tags: [Security]
+ *     summary: View all user (security)
+ *     tags: [administrator]
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       '200':
- *         description: List of visitors
+ *         description: List of users
  */
 /**
  * @swagger

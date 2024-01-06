@@ -103,12 +103,31 @@ app.post('/login/security', (req, res) => {
     });
 });
 
+//admin login to the admin account, if successfully login it will get a token for do other operation the admin can do
+app.post('/login/admin', (req, res) => {
+  console.log(req.body);
+  loginadmin(req.body.username, req.body.password)
+    .then(result => {
+      if (result.message === 'Correct password') {
+        const token = generateToken({ username: req.body.username });
+        res.send({ message: 'Successful login', token });
+      } else {
+        res.send('Login unsuccessful');
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    });
+});
+
+
 //the security view all the visitor (the token is true)
-app.get('/view/visitor/security', verifyToken, async (req, res) => {
+app.get('/view/user/admin', verifyToken, async (req, res) => {
   try {
     const result = await client
       .db('benr2423')
-      .collection('visitor')
+      .collection('users')
       .find()
       .toArray();
 
@@ -260,6 +279,18 @@ app.listen(port, () => {
 
 async function login(reqUsername, reqPassword) {
   let matchUser = await client.db('benr2423').collection('security').findOne({ username: { $eq: reqUsername } });
+
+  if (!matchUser)
+    return { message: "User not found!" };
+
+  if (matchUser.password === reqPassword)
+    return { message: "Correct password", user: matchUser };
+  else
+    return { message: "Invalid password" };
+}
+
+async function loginadmin(reqUsername, reqPassword) {
+  let matchUser = await client.db('benr2423').collection('administrator').findOne({ username: { $eq: reqUsername } });
 
   if (!matchUser)
     return { message: "User not found!" };
