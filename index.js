@@ -210,30 +210,44 @@ app.post('/retrieve/visitortoken', async (req, res) => {
   const { visitorname, phonenumber } = req.body;
 
   try {
-    // Assuming the visitor's information is stored under a user document in a 'visitors' array
-    const userWithVisitor = await client.db('benr2423').collection('users').findOne({
-      "visitors.visitorname": visitorname,
-      "visitors.phonenumber": phonenumber
-    });
-
-    // If the visitor is found within a user's document
-    if (userWithVisitor) {
-      // Retrieve the specific visitor object from the visitors array
-      const visitor = userWithVisitor.visitors.find(v => v.visitorname === visitorname && v.phonenumber === phonenumber);
-      
-      if (visitor) {
-        // Respond with the token if the visitor is found
-        res.json({ success: true, visitorToken: visitor.token });
-      } else {
-        // Visitor's details were not found in the array
-        res.status(404).json({ success: false, message: 'Visitor not found.' });
+    // Use aggregation pipeline to match the user document and filter the visitors array
+    const pipeline = [
+      {
+        $match: {
+          "visitors.visitorname": visitorname,
+          "visitors.phonenumber": phonenumber
+        }
+      },
+      {
+        $project: {
+          visitors: {
+            $filter: {
+              input: "$visitors",
+              as: "visitor",
+              cond: {
+                $and: [
+                  { $eq: ["$$visitor.visitorname", visitorname] },
+                  { $eq: ["$$visitor.phonenumber", phonenumber] }
+                ]
+              }
+            }
+          },
+          _id: 0
+        }
       }
+    ];
+
+    const [result] = await client.db('benr2423').collection('users').aggregate(pipeline).toArray();
+
+    if (result && result.visitors.length > 0) {
+      // Assuming there is only one match, take the first element of the array
+      const visitor = result.visitors[0];
+      res.json({ success: true, visitorToken: visitor.visitorToken });
     } else {
-      // No user document contains the visitor's details
-      res.status(404).json({ success: false, message: 'No visit scheduled with this information.' });
+      res.status(404).json({ success: false, message: 'Visitor not found or no token exists.' });
     }
   } catch (error) {
-    // Handle any other errors
+    console.error(error);
     res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
 });
