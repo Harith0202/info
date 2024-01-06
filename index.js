@@ -132,7 +132,7 @@ app.post('/login/admin', verifyAdminToken, (req, res) => {
   loginadmin(req.body.username, req.body.password)
     .then(result => {
       if (result.message === 'Correct password') {
-        const token = generateToken({ username: req.body.username });
+        const token = generateAdminToken({ username: req.body.username });
         res.send({ message: 'Successful login', token });
       } else {
         res.send('Login unsuccessful');
