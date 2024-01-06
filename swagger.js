@@ -18,7 +18,7 @@
  *   post:
  *     tags:
  *       - User Management
- *      security:
+ *     security:
  *       - BearerAuth: []
  *     summary: Register a new user
  *     description: This endpoint is for creating a new user account.
@@ -92,7 +92,7 @@
  * @swagger
  * /login/admin:
  *   post:
- *     summary: Login for security account
+ *     summary: Login for admin account
  *     tags: [administrator]
  *     requestBody:
  *       description: adminitrator login credentials
