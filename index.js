@@ -144,30 +144,6 @@ app.post('/login/admin', (req, res) => {
     });
 });
 
-// Middleware to verify admin token
-function verifyAdminToken(req, res, next) {
-  let header = req.headers.authorization;
-  if (!header) {
-    return res.status(401).send('Unauthorized');
-  }
-
-  let token = header.split(' ')[1];
-  jwt.verify(token, 'adminSecretPassword', (err, decoded) => {
-    if (err) {
-      return res.status(401).send('Unauthorized');
-    }
-
-    // Check if the decoded token has the admin role
-    if (decoded.role === 'admin') {
-      next(); // Allow access to the route
-    } else {
-      return res.status(403).send('Forbidden: Insufficient privileges');
-    }
-  });
-}
-
-
-
 app.get('/view/user/admin', verifyAdminToken, async (req, res) => {
   try {
     const result = await client
