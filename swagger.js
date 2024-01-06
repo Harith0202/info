@@ -320,6 +320,8 @@
  *                 phoneNumber:
  *                   type: string
  *                   example: "+1234567890"
+ *                 visitor of:
+ *                   type: string
  *       '401':
  *         description: Unauthorized. Token is missing, invalid, or expired.
  *       '404':

@@ -387,7 +387,7 @@ app.get('/get/userphonenumber', async (req, res) => {
 
     if (user) {
       // Respond with the user's phone number
-      res.json({ success: true, phoneNumber: user.phonenumber });
+      res.json({ success: true, phoneNumber: user.phonenumber, visitor_of: user });
     } else {
       res.status(404).json({ success: false, message: 'User not found for the provided token.' });
     }
