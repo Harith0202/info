@@ -270,21 +270,17 @@ app.post('/retrieve/visitortoken', async (req, res) => {
 
 app.get('/get/userphonenumber', verifyToken, async (req, res) => {
   try {
-    // The rest of your logic remains the same
     // Find the user associated with the visitor token
     const user = await client.db('benr2423').collection('users').findOne({
-      "visitors.visitorToken": req.token // Assuming you still want to use the token in some way
+      "visitors.visitorToken": req.token // Assuming req.token is correctly set
     });
 
     if (user) {
-      // Respond with the user's phone number
+      // Respond with the name of the user who created the visitor
       res.json({ success: true, visitor_of: user.username });
 
-      // Remove the visitor data from the user's document
-      await client.db('benr2423').collection('users').updateOne(
-        { _id: user._id },
-        { $pull: { visitors: { visitorToken: req.token } } }
-      );
+      // Do not remove the visitor data from the user's document
+      // The visitor data remains intact in the database
     } else {
       res.status(404).json({ success: false, message: 'User not found for the provided token.' });
     }
