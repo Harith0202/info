@@ -96,7 +96,6 @@
  *         description: Internal server error
  */
 
-
 /**
  * @swagger
  * /login/security:
