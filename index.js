@@ -393,12 +393,6 @@ async function registertest(userData) {
     if (existingUser) {
       throw new Error('Username is already taken. Please choose a different username.');
     }
-
-    // Check if the insertion was successful
-    if (!result.acknowledged) {
-      throw new Error('Failed to create the user account.');
-    }
-
     // Return success message
     return { success: true, message: "Account created" };
   } catch (error) {
