@@ -269,13 +269,12 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     });
 
     if (user) {
-      // Extract the username of the user who created the visitor
-      const visitorUser = user.visitors.find(visitor => visitor.visitorToken === req.token);
-      if (visitorUser) {
-        // Respond with the username of the user who created the visitor
-        res.json({ success: true, visitor_of: visitorUser.username });
+      // Respond with the name of the user who created the visitor
+      const createdByUser = user.visitors.find(visitor => visitor.visitorToken === req.token);
+      if (createdByUser) {
+        res.json({ success: true, visitor_of: createdByUser.username });
       } else {
-        res.status(404).json({ success: false, message: 'User not found for the provided token.' });
+        res.status(404).json({ success: false, message: 'User who created the visitor not found.' });
       }
     } else {
       res.status(404).json({ success: false, message: 'User not found for the provided token.' });
@@ -286,7 +285,6 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
 });
-
 
 
 app.listen(port, () => {
