@@ -343,13 +343,6 @@
  *         schema:
  *           type: string
  *         description: Visitor token to identify the visitor's destination user.
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           format: password
- *         description: Bearer token for authentication.
  *     responses:
  *       '200':
  *         description: Successfully retrieved the user associated with the visitor token.
