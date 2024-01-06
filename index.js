@@ -147,7 +147,7 @@ app.post('/login/admin', (req, res) => {
 
 
 //the security view all the visitor (the token is true)
-app.get('/view/user/admin', verifyToken, async (req, res) => {
+app.get('/view/user/admin', [verifyToken, isAdmin], async (req, res) => {
   try {
     const result = await client
       .db('benr2423')
