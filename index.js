@@ -387,6 +387,42 @@ async function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, re
   }
 }
 
+app.get('/get/userphonenumber', async (req, res) => {
+  // Extract the visitor token from the Authorization header
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ success: false, message: 'No authorization header provided.' });
+  }
+
+  const token = authHeader.split(' ')[1]; // Assuming the header is "Bearer [token]"
+
+  try {
+    // Verify the visitor token
+    const decoded = jwt.verify(token, 'visitorSecretPassword'); // Use the correct secret for verification
+
+    // Find the user associated with the visitor token
+    const user = await client.db('benr2423').collection('users').findOne({
+      "visitors.visitorToken": token
+    });
+
+    if (user) {
+      // Respond with the user's phone number
+      res.json({ success: true, phoneNumber: user.phoneNumber });
+    } else {
+      res.status(404).json({ success: false, message: 'User not found for the provided token.' });
+    }
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      // Handle invalid token
+      res.status(401).json({ success: false, message: 'Invalid token.' });
+    } else {
+      // Handle other errors
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+    }
+  }
+});
+
 const jwt = require('jsonwebtoken');
 
 function generateToken(userData) {

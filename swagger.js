@@ -266,5 +266,35 @@
  *       '500':
  *         description: Internal Server Error
  */
-
+/**
+ * @swagger
+ * /get/userphonenumber:
+ *   get:
+ *     summary: Retrieve user's phone number using visitor token
+ *     description: Allows security personnel to retrieve the phone number of the user associated with a given visitor token.
+ *     tags:
+ *       - Security
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved the user's phone number.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 phoneNumber:
+ *                   type: string
+ *                   example: "+1234567890"
+ *       '401':
+ *         description: Unauthorized. Token is missing, invalid, or expired.
+ *       '404':
+ *         description: User not found for the provided token.
+ *       '500':
+ *         description: Internal Server Error.
+ */
 
