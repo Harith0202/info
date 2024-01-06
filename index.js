@@ -327,8 +327,8 @@ async function register(userData) {
 ///create visitor 
 async function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, reqTemperature, reqGender, reqEthnicity, reqAge, ReqPhonenumber, createdBy) {
   try {
-    // Define the visitor object
-    const visitor = {
+    // Generate a token for the visitor pass
+    const visitorPassToken = generateVisitorToken({
       "visitorname": reqVisitorname,
       "checkintime": reqCheckintime,
       "checkouttime": reqCheckouttime,
@@ -337,9 +337,22 @@ async function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, re
       "ethnicity": reqEthnicity,
       "age": reqAge,
       "phonenumber": ReqPhonenumber
+    });
+
+    // Define the visitor object with the token included
+    const visitor = {
+      "visitorname": reqVisitorname,
+      "checkintime": reqCheckintime,
+      "checkouttime": reqCheckouttime,
+      "temperature": reqTemperature,
+      "gender": reqGender,
+      "ethnicity": reqEthnicity,
+      "age": reqAge,
+      "phonenumber": ReqPhonenumber,
+      "visitorToken": visitorPassToken // Save the token here
     };
 
-    // Push the visitor object to the visitors array of the user who created the visitor
+    // Push the visitor object (with token) to the visitors array of the user who created the visitor
     const updateResult = await client.db('benr2423').collection('users').updateOne(
       { "username": createdBy },
       { $push: { "visitors": visitor } }
@@ -352,9 +365,7 @@ async function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, re
       return { success: false, message: "Failed to add visitor to the user" };
     }
 
-    // Issue a token for the visitor pass
-    const visitorPassToken = generateVisitorToken(visitor);
-
+    // Return success message along with the visitor pass token
     return { success: true, message: "Visitor created", visitorPassToken: visitorPassToken };
   } catch (error) {
     console.error(error);
