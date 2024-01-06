@@ -263,9 +263,13 @@ app.post('/retrieve/visitortoken', async (req, res) => {
 
 app.get('/get/userphonenumber', verifyToken, async (req, res) => {
   try {
-    const visitorToken = req.query.visitorToken; // Assuming the visitorToken is passed as a query parameter
+    // The verifyToken middleware will authenticate the user first.
+    // Once authenticated, we expect the visitorToken to be part of the query parameters.
+
+    const visitorToken = req.query.visitorToken; // Retrieve the visitorToken from query parameters
 
     if (!visitorToken) {
+      // If visitorToken is not provided, send a request for it.
       return res.status(400).json({ success: false, message: 'Visitor token is required.' });
     }
 
@@ -277,12 +281,14 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found for the provided token.' });
+      // If no user is found with that visitorToken, respond accordingly.
+      return res.status(404).json({ success: false, message: 'User not found for the provided visitor token.' });
     }
 
     // Respond with the username associated with the visitor token
     res.json({ success: true, username: user.username });
   } catch (error) {
+    // Handle any errors that occur during the process.
     console.error(error);
     res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
