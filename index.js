@@ -146,8 +146,6 @@ app.post('/login/admin', (req, res) => {
 
 app.get('/view/user/admin', verifyAdminToken, async (req, res) => {
   try {
-    // Verify the visitor token
-    const decoded = jwt.verify(token, 'adminSecretPassword'); // Use the correct secret for verification
     const result = await client
       .db('benr2423')
       .collection('users')
@@ -511,13 +509,35 @@ function generateVisitorToken(visitorData) {
   return visitorToken;
 }
 
-// Function to generate an admin token
 function generateAdminToken(adminData) {
   const adminToken = jwt.sign(
-    adminData,
+    {
+      ...adminData,
+      role: 'admin' // Include the admin role in the token payload
+    },
     'adminSecretPassword', // Use a secure, environment-specific password for admin tokens
     { expiresIn: '1d' } // Set an appropriate expiration time for the admin token
   );
 
   return adminToken;
+}
+function verifyAdminToken(req, res, next) {
+  let header = req.headers.authorization;
+  if (!header) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  let token = header.split(' ')[1];
+  jwt.verify(token, 'adminSecretPassword', (err, decoded) => {
+    if (err) {
+      return res.status(401).send('Unauthorized');
+    }
+
+    // Check if the decoded token has the admin role
+    if (decoded.role === 'admin') {
+      next(); // Allow access to the route
+    } else {
+      return res.status(403).send('Forbidden: Insufficient privileges');
+    }
+  });
 }
