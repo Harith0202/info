@@ -365,6 +365,14 @@ async function registertest(userData) {
     if (existingUser) {
       throw new Error('Username is already taken. Please choose a different username.');
     }
+    // Insert the user data into the database
+    const result = await client.db('benr2423').collection('users').insertOne(userData);
+
+    // Check if the insertion was successful
+    if (!result.acknowledged) {
+      throw new Error('Failed to create the user account.');
+    }
+
     // Return success message
     return { success: true, message: "Account created" };
   } catch (error) {
