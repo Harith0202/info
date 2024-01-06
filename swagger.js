@@ -363,19 +363,34 @@
  *   get:
  *     summary: View all users
  *     description: Retrieves a list of all users. Accessible by admin users only.
+ *     tags:
+ *       - [User Management]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
- *       200:
- *         description: A list of users
+ *       '200':
+ *         description: A list of all users.
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 type: object
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden
+ *                 properties:
+ *                   username:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   phonenumber:
+ *                     type: string
+ *                   // Add other user properties as necessary
+ *       '401':
+ *         description: Unauthorized. Token is missing or invalid.
+ *       '403':
+ *         description: Forbidden. Accessible only by admin users.
+ *       '500':
+ *         description: Internal Server Error.
  */
+
