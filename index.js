@@ -270,7 +270,7 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
 
     if (user) {
       // Respond with the name of the user who created the visitor
-      res.json({ success: true, visitor_of: user.username });
+      res.json({ success: true, visitor_of: "$username" });
 
       // Do not remove the visitor data from the user's document
       // The visitor data remains intact in the database
