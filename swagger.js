@@ -209,8 +209,7 @@
  *   get:
  *     summary: View visitors associated with the user
  *     description: Retrieves a list of visitors that are associated with the authenticated user.
- *     tags:
- *       - [User Management]
+ *     tags: [User Management]
  *     security:
  *       - BearerAuth: []
  *     responses:
@@ -325,50 +324,6 @@
  *         description: Visitor not found or no matching token for the provided details.
  *       '500':
  *         description: Internal Server Error.
- */
-/**
- * @swagger
- * /update/visitor/{visitorname}:
- *   put:
- *     summary: Update visitor information (User)
- *     tags: [User Management]
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: path
- *         name: visitorname
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       description: Updated visitor information
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               checkintime:
- *                 type: string
- *               checkouttime:
- *                 type: string
- *               temperature:
- *                 type: number
- *               gender:
- *                 type: string
- *               ethnicity:
- *                 type: string
- *               age:
- *                 type: number
- *               phonenumber:
- *                 type: string
- *     responses:
- *       '200':
- *         description: Visitor updated successfully
- *       '404':
- *         description: Visitor not found or unauthorized
- *       '500':
- *         description: Internal Server Error
  */
 
 /**
