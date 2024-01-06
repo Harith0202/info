@@ -261,26 +261,28 @@ app.post('/retrieve/visitortoken', async (req, res) => {
 });
 
 
-app.get('/get/userphonenumber', verifyToken, async (req, res) => {
+app.get('/get/userphonenumber', async (req, res) => {
   try {
-    // Find the user associated with the visitor token
+    const visitorToken = req.query.visitorToken; // Assuming the visitorToken is passed as a query parameter
+
+    if (!visitorToken) {
+      return res.status(400).json({ success: false, message: 'Visitor token is required.' });
+    }
+
+    // Search for a user with the specified visitorToken in their visitors array
     const user = await client.db('benr2423').collection('users').findOne({
-      "visitors.visitorToken": req.token // Assuming req.token is correctly set
+      'visitors.visitorToken': visitorToken
+    }, {
+      projection: { 'username': 1, _id: 0 }
     });
 
-    if (user) {
-      // Respond with the name of the user who created the visitor
-      const createdByUser = user.visitors.find(visitor => visitor.visitorToken === req.token);
-      if (createdByUser) {
-        res.json({ success: true, visitor_of: createdByUser.username });
-      } else {
-        res.status(404).json({ success: false, message: 'User who created the visitor not found.' });
-      }
-    } else {
-      res.status(404).json({ success: false, message: 'User not found for the provided token.' });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found for the provided token.' });
     }
+
+    // Respond with the username associated with the visitor token
+    res.json({ success: true, username: user.username });
   } catch (error) {
-    // Handle errors
     console.error(error);
     res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
