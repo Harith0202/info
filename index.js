@@ -127,7 +127,7 @@ app.post('/login/security', (req, res) => {
 });
 
 //admin login to the admin account, if successfully login it will get a token for do other operation the admin can do
-app.post('/login/admin', (req, res) => {
+app.post('/login/admin', verifyAdminToken, (req, res) => {
   console.log(req.body);
   loginadmin(req.body.username, req.body.password)
     .then(result => {
@@ -144,9 +144,31 @@ app.post('/login/admin', (req, res) => {
     });
 });
 
+// Middleware to verify admin token
+function verifyAdminToken(req, res, next) {
+  let header = req.headers.authorization;
+  if (!header) {
+    return res.status(401).send('Unauthorized');
+  }
 
-//the security view all the visitor (the token is true)
-app.get('/view/user/admin', verifyToken, async (req, res) => {
+  let token = header.split(' ')[1];
+  jwt.verify(token, 'adminSecretPassword', (err, decoded) => {
+    if (err) {
+      return res.status(401).send('Unauthorized');
+    }
+
+    // Check if the decoded token has the admin role
+    if (decoded.role === 'admin') {
+      next(); // Allow access to the route
+    } else {
+      return res.status(403).send('Forbidden: Insufficient privileges');
+    }
+  });
+}
+
+
+
+app.get('/view/user/admin', verifyAdminToken, async (req, res) => {
   try {
     const result = await client
       .db('benr2423')
@@ -160,7 +182,6 @@ app.get('/view/user/admin', verifyToken, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-
 
 //user login account 
 app.post('/login/user', (req, res) => {
@@ -510,4 +531,15 @@ function generateVisitorToken(visitorData) {
   );
 
   return visitorToken;
+}
+
+// Function to generate an admin token
+function generateAdminToken(adminData) {
+  const adminToken = jwt.sign(
+    adminData,
+    'adminSecretPassword', // Use a secure, environment-specific password for admin tokens
+    { expiresIn: '1d' } // Set an appropriate expiration time for the admin token
+  );
+
+  return adminToken;
 }
