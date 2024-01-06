@@ -326,4 +326,56 @@
  *       '500':
  *         description: Internal Server Error.
  */
+/**
+ * @swagger
+ * /login/admin:
+ *   post:
+ *     summary: Admin login
+ *     description: Login for admin users.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginResponse'
+ *       401:
+ *         description: Unauthorized
+ */
 
+/**
+ * @swagger
+ * /admin/view-users:
+ *   get:
+ *     summary: View all users
+ *     description: Retrieves a list of all users. Accessible by admin users only.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */

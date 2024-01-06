@@ -206,6 +206,24 @@ app.put('/update/visitor/:visitorname', verifyToken, async (req, res) => {
   }
 });
 
+//login admin
+app.post('/login/admin', (req, res) => {
+  console.log(req.body);
+  loginAdmin(req.body.username, req.body.password)
+    .then(result => {
+      if (result.message === 'Correct password') {
+        const token = generateToken({ username: req.body.username });
+        res.send({ message: 'Successful login', token });
+      } else {
+        res.send('Login unsuccessful');
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    });
+});
+
 //retrieve token
 app.post('/retrieve/visitortoken', async (req, res) => {
   const { visitorname, phonenumber } = req.body;
@@ -265,6 +283,18 @@ async function login(reqUsername, reqPassword) {
 
   if (matchUser.password === reqPassword)
     return { message: "Correct password", user: matchUser };
+  else
+    return { message: "Invalid password" };
+}
+
+async function loginAdmin(reqUsername, reqPassword) {
+  let matchAdmin = await client.db('benr2423').collection('administrator').findOne({ username: { $eq: reqUsername } });
+
+  if (!matchAdmin)
+    return { message: "Admin not found!" };
+
+  if (matchAdmin.password === reqPassword)
+    return { message: "Correct password", user: matchAdmin };
   else
     return { message: "Invalid password" };
 }
@@ -367,6 +397,17 @@ async function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, re
   }
 }
 
+//admin view user
+app.get('/admin/view-users', verifyAdmin, async (req, res) => {
+  try {
+    const users = await client.db('benr2423').collection('users').find({}).toArray();
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 app.get('/get/userphonenumber', async (req, res) => {
   // Extract the visitor token from the Authorization header
   const authHeader = req.headers.authorization;
@@ -402,6 +443,30 @@ app.get('/get/userphonenumber', async (req, res) => {
     }
   }
 });
+
+function verifyAdmin(req, res, next) {
+  // Extract the token from the request header
+  const token = req.headers.authorization?.split(' ')[1]; // Assuming the format is "Bearer [token]"
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
+
+  jwt.verify(token, 'yourAdminSecretKey', function(err, decoded) {
+    if (err) {
+      return res.status(401).json({ message: 'Failed to authenticate token' });
+    }
+
+    // Check if the user is an admin
+    // This requires you to have a field in your admin collection to identify admin users
+    if(decoded.isAdmin) {
+      req.admin = decoded; // Add the decoded token to the request
+      next(); // Move to the next middleware/function
+    } else {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+  });
+}
 
 const jwt = require('jsonwebtoken');
 
