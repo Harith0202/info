@@ -229,36 +229,29 @@ app.post('/retrieve/visitortoken', async (req, res) => {
     // Use aggregation pipeline to match the user document and filter the visitors array
     const pipeline = [
       {
+        $unwind: "$visitors" // Deconstruct the visitors array
+      },
+      {
         $match: {
+          // Match the specific visitor in the visitors array
           "visitors.visitorname": visitorname,
           "visitors.phonenumber": phonenumber
         }
       },
       {
         $project: {
-          visitors: {
-            $filter: {
-              input: "$visitors",
-              as: "visitor",
-              cond: {
-                $and: [
-                  { $eq: ["$$visitor.visitorname", visitorname] },
-                  { $eq: ["$$visitor.phonenumber", phonenumber] }
-                ]
-              }
-            }
-          },
-          _id: 0
+          // Project the necessary fields
+          visitorToken: "$visitors.visitorToken",
+          username: 1 // Make sure to adjust this if the username is stored differently
         }
       }
     ];
 
-    const [result] = await client.db('benr2423').collection('users').aggregate(pipeline).toArray();
+    const user = await client.db('benr2423').collection('users').aggregate(pipeline).toArray();
 
-    if (result && result.visitors.length > 0) {
+    if (user.length > 0) {
       // Assuming there is only one match, take the first element of the array
-      const visitor = result.visitors[0];
-      res.json({ success: true, visitorToken: visitor.visitorToken });
+      res.json({ success: true, visitorToken: user[0].visitorToken, username: user[0].username });
     } else {
       res.status(404).json({ success: false, message: 'Visitor not found or no token exists.' });
     }
@@ -267,6 +260,7 @@ app.post('/retrieve/visitortoken', async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
 });
+
 
 app.get('/get/userphonenumber', verifyToken, async (req, res) => {
   try {
