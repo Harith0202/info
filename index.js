@@ -84,6 +84,29 @@ app.post('/register/user', verifyToken, async (req, res) => {
 }
 });
 
+app.post('/register/test/user', async (req, res) => {
+  try {
+    const userData = {
+      username: req.body.username,
+      password: req.body.password,
+      name: req.body.name,
+      email: req.body.email,
+      phonenumber: req.body.phonenumber
+    };
+
+    const result = await registertest(userData);
+
+    if (result.success) {
+      res.status(201).json(result); // Return JSON response
+    } else {
+      res.status(400).json(result); // Return JSON response
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" }); // Return JSON response
+}
+});
+
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
 app.post('/login/security', (req, res) => {
@@ -349,6 +372,44 @@ async function register(userData) {
     return { success: false, message: error.message };
 }
 }
+
+// Update the register function to accept a single userData object
+async function registertest(userData) {
+  try {
+    // Basic input validation
+    if (!userData.username || !userData.password || !userData.name || !userData.email || !userData.phonenumber) {
+      throw new Error('Incomplete user data. Please provide all required fields.');
+    }
+
+    // Strong password validation
+    // Require at least one number, one lowercase, one uppercase letter, and one special character
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/;
+    if (!passwordRegex.test(userData.password)) {
+      throw new Error('Password must contain at least one number, one lowercase, one uppercase letter, and one special symbol.');
+    }
+
+    // Check if the username is already taken
+    const existingUser = await client.db('benr2423').collection('users').findOne({ username: userData.username });
+    if (existingUser) {
+      throw new Error('Username is already taken. Please choose a different username.');
+    }
+
+    // Insert the user data into the database
+    const result = await client.db('benr2423').collection('users').insertOne(userData);
+
+    // Check if the insertion was successful
+    if (!result.acknowledged) {
+      throw new Error('Failed to create the user account.');
+    }
+
+    // Return success message
+    return { success: true, message: "Account created" };
+  } catch (error) {
+    // Return detailed error message in case of any issues
+    return { success: false, message: error.message };
+}
+}
+
 
 ///create visitor 
 async function createvisitor(reqVisitorname, reqCheckintime, reqCheckouttime, reqTemperature, reqGender, reqEthnicity, reqAge, ReqPhonenumber, createdBy) {

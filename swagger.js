@@ -55,6 +55,47 @@
  *         description: Internal server error
  */
 
+/**
+ * @swagger
+ * /register/test/user:
+ *   post:
+ *     tags:
+ *       - User Management
+ *     summary: Register a new user
+ *     description: This endpoint is for creating a new user account.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 description: Password must be at least 8 characters long and contain at least one number, one lowercase letter, one uppercase letter, and one special symbol.
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phonenumber: 
+ *                 type: string
+ *             required:
+ *               - username
+ *               - password
+ *               - name
+ *               - email
+ *               - phonenumber
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *       400:
+ *         description: Bad request. User data is not valid.
+ *       500:
+ *         description: Internal server error
+ */
+
 
 /**
  * @swagger
