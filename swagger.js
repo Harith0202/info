@@ -331,21 +331,28 @@
  * /get/userphonenumber:
  *   get:
  *     summary: Retrieve the visitor's destination using visitor token
- *     description: Allows security personnel to retrieve the detail of the user associated with a given visitor token. The token must be provided in the Authorization header.
+ *     description: Allows security personnel to retrieve the detail of the user associated with a given visitor token. The visitor token must be provided as a query parameter.
  *     tags:
  *       - Security
  *     security:
  *       - BearerAuth: []
  *     parameters:
+ *       - in: query
+ *         name: visitorToken
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Visitor token to identify the visitor's destination user.
  *       - in: header
  *         name: Authorization
  *         required: true
  *         schema:
  *           type: string
+ *           format: password
  *         description: Bearer token for authentication.
  *     responses:
  *       '200':
- *         description: Successfully retrieved the visitor's destination.
+ *         description: Successfully retrieved the user associated with the visitor token.
  *         content:
  *           application/json:
  *             schema:
@@ -354,12 +361,15 @@
  *                 success:
  *                   type: boolean
  *                   example: true
- *                 visitor_of:
+ *                 username:
  *                   type: string
+ *                   example: johndoe
+ *       '400':
+ *         description: Bad request. Visitor token is missing.
  *       '401':
  *         description: Unauthorized. Token is missing, invalid, or expired.
  *       '404':
- *         description: User not found for the provided token.
+ *         description: User not found for the provided visitor token.
  *       '500':
  *         description: Internal Server Error.
  */
