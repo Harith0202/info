@@ -63,11 +63,6 @@ app.use(express.json());
 
 app.post('/register/user', verifyToken, async (req, res) => {
   try {
-    // Check if the user has the role of either 'security' or 'admin'
-    if (req.user.role !== 'security' && req.user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: "Insufficient privileges" });
-    }
-
     const userData = {
       username: req.body.username,
       password: req.body.password,
@@ -86,7 +81,7 @@ app.post('/register/user', verifyToken, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Internal Server Error" }); // Return JSON response
-  }
+}
 });
 
 app.post('/register/test/user', async (req, res) => {
@@ -138,7 +133,7 @@ app.post('/login/admin', (req, res) => {
     .then(result => {
       if (result.message === 'Correct password') {
         // Generate token with role set to 'administrator'
-        const token = generateToken({ username: req.body.username }, result.role);
+        const token = generateToken({ username: req.body.username }, 'administrator');
         res.send({ message: 'Successful login', token });
       } else {
         res.send('Login unsuccessful');
@@ -152,7 +147,7 @@ app.post('/login/admin', (req, res) => {
 
 
 //the security view all the visitor (the token is true)
-app.get('/view/user/admin', [verifyToken, isAdmin], async (req, res) => {
+app.get('/view/user/admin', verifyToken, async (req, res) => {
   try {
     const result = await client
       .db('benr2423')
@@ -228,6 +223,32 @@ app.get('/view/visitor/user', verifyToken, async (req, res) => {
   }
 });
 
+/// user update its visitor info
+app.put('/update/visitor/:visitorname', verifyToken, async (req, res) => {
+  const visitorname = req.params.visitorname;
+  const username = req.user.username;
+  const { checkintime, checkouttime,temperature,gender,ethnicity,age,phonenumber } = req.body;
+
+  try {
+    const updateVisitorResult = await client
+      .db('benr2423')
+      .collection('visitor')
+      .updateOne(
+        { visitorname, createdBy: username },
+        { $set: { checkintime, checkouttime,temperature,gender,ethnicity,age,phonenumber } }
+      );
+
+    if (updateVisitorResult.modifiedCount === 0) {
+      return res.status(404).send('Visitor not found or unauthorized');
+    }
+
+    res.send('Visitor updated successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 
 //retrieve token
 app.post('/retrieve/visitortoken', async (req, res) => {
@@ -298,12 +319,10 @@ async function loginadmin(reqUsername, reqPassword) {
   if (!matchUser)
     return { message: "User not found!" };
 
-  if (matchUser.password === reqPassword) {
-    // Correct password, but also include the role 'admin' in the response
-    return { message: "Correct password", user: matchUser, role: 'admin' };
-  } else {
+  if (matchUser.password === reqPassword)
+    return { message: "Correct password", user: matchUser };
+  else
     return { message: "Invalid password" };
-  }
 }
 
 async function loginuser(reqUsername, reqPassword) {
@@ -454,13 +473,6 @@ app.get('/get/userphonenumber', async (req, res) => {
     if (user) {
       // Respond with the user's phone number
       res.json({ success: true, visitor_of: user.username });
-
-      // Remove the visitor data from the user's document
-      await client.db('benr2423').collection('users').updateOne(
-        { _id: user._id },
-        { $pull: { visitors: { visitorToken: token } } }
-      );
-
     } else {
       res.status(404).json({ success: false, message: 'User not found for the provided token.' });
     }
@@ -501,21 +513,19 @@ function verifyToken(req, res, next) {
   }
 
   let token = header.split(' ')[1];
-  jwt.verify(token, 'mypassword', (err, decoded) => {
+  jwt.verify(token, 'mypassword', function (err, decoded) {
     if (err) {
       return res.status(401).send('Unauthorized');
+    }
+    
+    // Check if the role in the token is 'administrator'
+    if (decoded.role !== 'administrator') {
+      return res.status(403).send('Forbidden: Insufficient privileges');
     }
 
     req.user = decoded;
     next();
   });
-}
-
-function isAdmin(req, res, next) {
-  if (req.user.role !== 'admin') {
-    return res.status(403).send('Forbidden: Insufficient privileges');
-  }
-  next();
 }
 
 // Function to generate a visitor pass token
