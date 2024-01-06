@@ -63,6 +63,11 @@ app.use(express.json());
 
 app.post('/register/user', verifyToken, async (req, res) => {
   try {
+    // Check if the user has the role of either 'security' or 'admin'
+    if (req.user.role !== 'security' && req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: "Insufficient privileges" });
+    }
+
     const userData = {
       username: req.body.username,
       password: req.body.password,
@@ -81,7 +86,7 @@ app.post('/register/user', verifyToken, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Internal Server Error" }); // Return JSON response
-}
+  }
 });
 
 app.post('/register/test/user', async (req, res) => {
