@@ -287,11 +287,23 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
 
     // Respond with the username associated with the visitor token
     res.json({ success: true, createdBy: user.username });
-  } catch (error) {
-    // Handle any errors that occur during the process.
-    console.error(error);
+   // After successfully retrieving the username, delete the visitor's information
+   await client.db('benr2423').collection('users').updateOne(
+    { 'username': user.username },
+    { $pull: { 'visitors': { 'visitorToken': visitorToken } } }
+  );
+  
+  // Optionally, you can check the result of the delete operation and log it
+  // No need to send another response as we have already sent the username
+
+} catch (error) {
+  // If an error occurs during the find or delete operation, log it
+  console.error(error);
+  // We check if headers have been sent to avoid trying to send another response
+  if (!res.headersSent) {
     res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
+}
 });
 
 
