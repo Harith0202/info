@@ -373,6 +373,8 @@
  *     summary: Delete a visitor by their visitor token.
  *     tags:
  *       - User Management
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: visitorToken
