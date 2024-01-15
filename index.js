@@ -260,6 +260,27 @@ app.post('/retrieve/visitortoken', async (req, res) => {
   }
 });
 
+app.delete('/delete/visitor', verifyToken, async (req, res) => {
+  const visitorToken = req.query.visitorToken;
+
+  try {
+    // Use the $pull operator to remove the visitor with the given token
+    const result = await client.db('benr2423').collection('users').updateOne(
+      { 'username': req.user.username },
+      { $pull: { 'visitors': { 'visitorToken': visitorToken } } }
+    );
+
+    if (result.modifiedCount === 1) {
+      res.status(200).json({ success: true, message: 'Visitor deleted successfully' });
+    } else {
+      res.status(404).json({ success: false, message: 'Visitor not found or deletion failed' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+  }
+});
+
 
 app.get('/get/userphonenumber', verifyToken, async (req, res) => {
   try {

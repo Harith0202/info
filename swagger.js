@@ -366,4 +366,58 @@
  *       '500':
  *         description: Internal Server Error.
  */
-
+/**
+ * @swagger
+ * /delete/visitor:
+ *   delete:
+ *     summary: Delete a visitor by their visitor token.
+ *     tags:
+ *       - User Management
+ *     parameters:
+ *       - in: query
+ *         name: visitorToken
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The visitor token to identify the visitor.
+ *     responses:
+ *       200:
+ *         description: Successfully deleted the visitor.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates whether the deletion was successful.
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the result of the deletion.
+ *       404:
+ *         description: Visitor not found or deletion failed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates whether the deletion was unsuccessful.
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the result of the deletion.
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates whether the deletion resulted in a server error.
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the internal server error.
+ */
