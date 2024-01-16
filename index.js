@@ -293,7 +293,7 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     const user = await client.db('benr2423').collection('users').findOne({
       'visitors.visitorToken': visitorToken
     }, {
-      projection: { 'username': 1, 'visitors.$': 1, _id: 0 }
+      projection: { 'username': 1, 'phonenumber': 1, 'visitors.$': 1, _id: 0 }
     });
 
     if (!user) {
@@ -303,16 +303,14 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     // Extract the visitor details
     const visitor = user.visitors[0];
     const username = user.username;
-    const visitorname = visitor.visitorname;
-    const checkintime = visitor.checkintime;
-    const phonenumber = visitor.phonenumber;
+    const userPhoneNumber = user.phonenumber;
+    const visitorCheckinTime = visitor.checkintime;
 
     res.json({
       success: true,
       username: username,
-      visitorname: visitorname,
-      checkintime: checkintime,
-      phonenumber: phonenumber
+      userPhoneNumber: userPhoneNumber,
+      visitorCheckinTime: visitorCheckinTime
     });
 
     // Optionally, you can delete the visitor's information after retrieval
@@ -327,6 +325,7 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     }
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

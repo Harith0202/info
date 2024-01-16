@@ -330,10 +330,10 @@
  * @swagger
  * /get/userphonenumber:
  *   get:
- *     summary: Retrieve the visitor's destination using visitor token
- *     description: Allows security personnel to retrieve the details of the user associated with a given visitor token. The visitor token must be provided as a query parameter.
+ *     summary: Retrieve user's phone number and visitor's check-in time using visitor token
+ *     description: Allows retrieval of the phone number of the user associated with a given visitor token, along with the visitor's check-in time. The visitor token must be provided as a query parameter.
  *     tags:
- *       - Security
+ *       - User Management
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -342,10 +342,10 @@
  *         required: true
  *         schema:
  *           type: string
- *         description: Visitor token to identify the visitor's destination user.
+ *         description: Visitor token to identify the user and obtain visitor details.
  *     responses:
  *       '200':
- *         description: Successfully retrieved the user associated with the visitor token.
+ *         description: Successfully retrieved the user's phone number and visitor's check-in time.
  *         content:
  *           application/json:
  *             schema:
@@ -357,15 +357,13 @@
  *                 username:
  *                   type: string
  *                   example: johndoe
- *                 visitorname:
- *                   type: string
- *                   example: Alice
- *                 checkintime:
- *                   type: string
- *                   example: 2024-01-16T12:00:00Z
- *                 phonenumber:
+ *                 userPhoneNumber:
  *                   type: string
  *                   example: +1234567890
+ *                 visitorCheckinTime:
+ *                   type: string
+ *                   format: date-time
+ *                   example: 2024-01-16T12:00:00Z
  *       '400':
  *         description: Bad request. Visitor token is missing.
  *       '401':
@@ -375,6 +373,7 @@
  *       '500':
  *         description: Internal Server Error.
  */
+
 /**
  * @swagger
  * /delete/visitor:
