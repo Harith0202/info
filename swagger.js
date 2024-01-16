@@ -331,7 +331,7 @@
  * /get/userphonenumber:
  *   get:
  *     summary: Retrieve the visitor's destination using visitor token
- *     description: Allows security personnel to retrieve the detail of the user associated with a given visitor token. The visitor token must be provided as a query parameter.
+ *     description: Allows security personnel to retrieve the details of the user associated with a given visitor token. The visitor token must be provided as a query parameter.
  *     tags:
  *       - Security
  *     security:
@@ -357,6 +357,15 @@
  *                 username:
  *                   type: string
  *                   example: johndoe
+ *                 visitorname:
+ *                   type: string
+ *                   example: Alice
+ *                 checkintime:
+ *                   type: string
+ *                   example: 2024-01-16T12:00:00Z
+ *                 phonenumber:
+ *                   type: string
+ *                   example: +1234567890
  *       '400':
  *         description: Bad request. Visitor token is missing.
  *       '401':
