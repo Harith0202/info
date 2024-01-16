@@ -330,22 +330,21 @@
  * @swagger
  * /get/userphonenumber:
  *   get:
- *     summary: Retrieve the visitor's destination using visitor token
- *     description: Allows security personnel to retrieve the details of the user associated with a given visitor token. The visitor token must be provided as a query parameter.
- *     tags:
- *       - Security
- *     security:
- *       - BearerAuth: []
+ *     summary: Retrieve a user's phone number and a visitor's check-in time
+ *     description: Fetches the phone number of a user and the check-in time of a visitor based on the provided visitor token.
+ *     tags: [Security]
  *     parameters:
  *       - in: query
  *         name: visitorToken
  *         required: true
+ *         description: The visitor's token to identify the user and visitor details.
  *         schema:
  *           type: string
- *         description: Visitor token to identify the visitor's destination user.
+ *     security:
+ *       - BearerAuth: []
  *     responses:
- *       '200':
- *         description: Successfully retrieved the user associated with the visitor token.
+ *       200:
+ *         description: Successfully retrieved user's phone number and visitor's check-in time.
  *         content:
  *           application/json:
  *             schema:
@@ -353,29 +352,20 @@
  *               properties:
  *                 success:
  *                   type: boolean
- *                   example: true
  *                 username:
  *                   type: string
- *                   example: johndoe
- *                 visitorname:
- *                   type: string
- *                   example: Alice
- *                 checkintime:
- *                   type: string
- *                   example: 2024-01-16T12:00:00Z
  *                 phonenumber:
  *                   type: string
- *                   example: +1234567890
- *       '400':
- *         description: Bad request. Visitor token is missing.
- *       '401':
- *         description: Unauthorized. Token is missing, invalid, or expired.
- *       '404':
+ *                 visitorCheckinTime:
+ *                   type: string
+ *                   format: date-time
+ *       400:
+ *         description: Bad request, visitor token is required.
+ *       404:
  *         description: User not found for the provided visitor token.
- *       '500':
- *         description: Internal Server Error.
+ *       500:
+ *         description: Internal server error.
  */
-
 /**
  * @swagger
  * /delete/visitor:
