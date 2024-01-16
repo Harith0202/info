@@ -293,7 +293,7 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     const user = await client.db('benr2423').collection('users').findOne({
       'visitors.visitorToken': visitorToken
     }, {
-      projection: { 'username': 1, 'visitors.$': 1, _id: 0 }
+      projection: { 'username': 1, 'phonenumber': 1, 'visitors.$': 1, _id: 0 }
     });
 
     if (!user) {
