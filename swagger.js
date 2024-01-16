@@ -320,6 +320,8 @@
  *                 visitorToken:
  *                   type: string
  *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *                 checkintime:
+ *                   type: string
  *       '404':
  *         description: Visitor not found or no matching token for the provided details.
  *       '500':

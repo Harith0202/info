@@ -234,7 +234,7 @@ app.get('/view/visitor/user', verifyToken, async (req, res) => {
 
 //retrieve token
 app.post('/retrieve/visitortoken', async (req, res) => {
-  const { visitorname, phonenumber } = req.body;
+  const { visitorname, phonenumber, checkintime } = req.body;
 
   try {
     // Use aggregation pipeline to match the user document and filter the visitors array
@@ -251,7 +251,8 @@ app.post('/retrieve/visitortoken', async (req, res) => {
         $project: {
           // Project the necessary fields
           visitorToken: "$visitors.visitorToken",
-          username: "$username" // Adjusted to reference the username field
+          username: "$username", // Adjusted to reference the username field
+          checkintime: "$visitors.checkintime"
         }
       }
     ];
