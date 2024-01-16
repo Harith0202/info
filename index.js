@@ -305,14 +305,14 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     const username = user.username;
     const visitorname = visitor.visitorname;
     const checkintime = visitor.checkintime;
-    const phonenumber = visitor.phonenumber;
+    const phonenumber = user.phonenumber;
 
     res.json({
       success: true,
       username: username,
       visitorname: visitorname,
       checkintime: checkintime,
-      phonenumber: phonenumber
+      userphonenumber: phonenumber
     });
 
     // Optionally, you can delete the visitor's information after retrieval
