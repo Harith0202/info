@@ -8,6 +8,17 @@ const port = process.env.PORT || 3000;
 
 const MongoURI = process.env.MONGODB_URI;
 
+const rateLimit = require('express-rate-limit');
+
+// Configure the rate limiter
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 login requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: 'Too many login attempts from this IP, please try again after 15 minutes'
+});
+
 
 // Swagger JSDoc options
 const options = {
@@ -109,7 +120,7 @@ app.post('/register/test/user', async (req, res) => {
 
 
 //security login to the security account, if successfully login it will get a token for do other operation the security can do
-app.post('/login/security', (req, res) => {
+app.post('/login/security', loginLimiter, (req, res) => {
   console.log(req.body);
   login(req.body.username, req.body.password)
     .then(result => {
@@ -127,7 +138,7 @@ app.post('/login/security', (req, res) => {
 });
 
 //admin login to the admin account, if successfully login it will get a token for do other operation the admin can do
-app.post('/login/admin', (req, res) => {
+app.post('/login/admin', loginLimiter, (req, res) => {
   console.log(req.body);
   loginadmin(req.body.username, req.body.password)
     .then(result => {
@@ -160,7 +171,7 @@ app.get('/view/user/admin', verifyAdminToken, async (req, res) => {
 });
 
 //user login account 
-app.post('/login/user', (req, res) => {
+app.post('/login/user', loginLimiter, (req, res) => {
   console.log(req.body);
   loginuser(req.body.username, req.body.password)
     .then(result => {
