@@ -362,8 +362,9 @@
  *                   example: Alice
  *                 checkintime:
  *                   type: string
+ *                   format: date-time
  *                   example: 2024-01-16T12:00:00Z
- *                 phonenumber:
+ *                 userphonenumber:
  *                   type: string
  *                   example: +1234567890
  *       '400':
