@@ -234,7 +234,7 @@ app.get('/view/visitor/user', verifyToken, async (req, res) => {
 
 //retrieve token
 app.post('/retrieve/visitortoken', async (req, res) => {
-  const { visitorname, phonenumber, checkintime } = req.body;
+  const { visitorname, phonenumber } = req.body;
 
   try {
     // Use aggregation pipeline to match the user document and filter the visitors array
@@ -262,7 +262,7 @@ app.post('/retrieve/visitortoken', async (req, res) => {
     if (results.length > 0) {
       // Send the first match's details
       const user = results[0];
-      res.json({ success: true, visitorToken: user.visitorToken, username: user.username });
+      res.json({ success: true, visitorToken: user.visitorToken, username: user.username, checkintime: user.checkintime });
     } else {
       res.status(404).json({ success: false, message: 'Visitor not found or no token exists.' });
     }
