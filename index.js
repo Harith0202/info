@@ -72,7 +72,7 @@ client.connect().then(res => {
 
 app.use(express.json());
 
-app.post('/register/user', verifyToken, async (req, res) => {
+app.post('/register/user', verifySecurityToken, async (req, res) => {
   try {
     const userData = {
       username: req.body.username,
