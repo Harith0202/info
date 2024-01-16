@@ -293,21 +293,24 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     const user = await client.db('benr2423').collection('users').findOne({
       'visitors.visitorToken': visitorToken
     }, {
-      projection: { 'username': 1, 'phonenumber': 1, _id: 0 }
+      projection: { 'username': 1, 'phonenumber': 1, 'visitors.$': 1, _id: 0 }
     });
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found for the provided visitor token.' });
     }
 
-    // Extract the user's phone number
+    // Extract the user's phone number and visitor's check-in time
     const username = user.username;
     const phonenumber = user.phonenumber;
+    const visitor = user.visitors[0]; // Extract the first visitor matching the token
+    const checkintime = visitor.checkintime; // Get the check-in time of the visitor
 
     res.json({
       success: true,
       username: username,
-      phonenumber: phonenumber
+      phonenumber: phonenumber,
+      visitorCheckinTime: checkintime
     });
 
     // Optionally, you can delete the visitor's information after retrieval
