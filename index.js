@@ -284,23 +284,49 @@ app.delete('/delete/visitor', verifyToken, async (req, res) => {
 
 app.get('/get/userphonenumber', verifyToken, async (req, res) => {
   try {
-    // The verifyToken middleware will authenticate the user first.
-    // Once authenticated, we expect the visitorToken to be part of the query parameters.
-
     const visitorToken = req.query.visitorToken; // Retrieve the visitorToken from query parameters
 
     if (!visitorToken) {
-      // If visitorToken is not provided, send a request for it.
       return res.status(400).json({ success: false, message: 'Visitor token is required.' });
     }
 
-    // Search for a user with the specified visitorToken in their visitors array
     const user = await client.db('benr2423').collection('users').findOne({
       'visitors.visitorToken': visitorToken
     }, {
-      projection: { 'username': 1, _id: 0 },
-      projection: { 'phonenumber': 1, _id: 0 }
+      projection: { 'username': 1, 'visitors.$': 1, _id: 0 }
     });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found for the provided visitor token.' });
+    }
+
+    // Extract the visitor details
+    const visitor = user.visitors[0];
+    const username = user.username;
+    const visitorname = visitor.visitorname;
+    const checkintime = visitor.checkintime;
+    const phonenumber = user.phonenumber;
+
+    res.json({
+      success: true,
+      username: username,
+      visitorname: visitorname,
+      checkintime: checkintime,
+      phonenumber: phonenumber
+    });
+
+    // Optionally, you can delete the visitor's information after retrieval
+    await client.db('benr2423').collection('users').updateOne(
+      { 'username': username },
+      { $pull: { 'visitors': { 'visitorToken': visitorToken } } }
+    );
+  } catch (error) {
+    console.error(error);
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+    }
+  }
+});
 
     if (!user) {
       // If no user is found with that visitorToken, respond accordingly.
