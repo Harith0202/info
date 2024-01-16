@@ -293,24 +293,26 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     const user = await client.db('benr2423').collection('users').findOne({
       'visitors.visitorToken': visitorToken
     }, {
-      projection: { 'username': 1, 'phonenumber': 1, 'visitors.$': 1, _id: 0 }
+      projection: { 'username': 1, 'visitors.$': 1, _id: 0 }
     });
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found for the provided visitor token.' });
     }
 
-    // Extract the user's phone number and visitor's check-in time
+    // Extract the visitor details
+    const visitor = user.visitors[0];
     const username = user.username;
-    const phonenumber = user.phonenumber;
-    const visitor = user.visitors[0]; // Extract the first visitor matching the token
-    const checkintime = visitor.checkintime; // Get the check-in time of the visitor
+    const visitorname = visitor.visitorname;
+    const checkintime = visitor.checkintime;
+    const phonenumber = visitor.phonenumber;
 
     res.json({
       success: true,
       username: username,
-      phonenumber: phonenumber,
-      visitorCheckinTime: checkintime
+      visitorname: visitorname,
+      checkintime: checkintime,
+      phonenumber: phonenumber
     });
 
     // Optionally, you can delete the visitor's information after retrieval
@@ -325,34 +327,6 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     }
   }
 });
-
-
-    if (!user) {
-      // If no user is found with that visitorToken, respond accordingly.
-      return res.status(404).json({ success: false, message: 'User not found for the provided visitor token.' });
-    }
-
-    // Respond with the username associated with the visitor token
-    res.json({ success: true, createdBy: user.username });
-   // After successfully retrieving the username, delete the visitor's information
-   await client.db('benr2423').collection('users').updateOne(
-    { 'username': user.username },
-    { $pull: { 'visitors': { 'visitorToken': visitorToken } } }
-  );
-  
-  // Optionally, you can check the result of the delete operation and log it
-  // No need to send another response as we have already sent the username
-
-} catch (error) {
-  // If an error occurs during the find or delete operation, log it
-  console.error(error);
-  // We check if headers have been sent to avoid trying to send another response
-  if (!res.headersSent) {
-    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
-  }
-}
-});
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
