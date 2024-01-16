@@ -125,7 +125,7 @@ app.post('/login/security', loginLimiter, (req, res) => {
   login(req.body.username, req.body.password)
     .then(result => {
       if (result.message === 'Correct password') {
-        const token = generateToken({ username: req.body.username });
+        const token = generateSecurityToken({ username: req.body.username });
         res.send({ message: 'Successful login', token });
       } else {
         res.send('Login unsuccessful');
@@ -294,7 +294,7 @@ app.delete('/delete/visitor', verifyToken, async (req, res) => {
 });
 
 
-app.get('/get/userphonenumber', verifyToken, async (req, res) => {
+app.get('/get/userphonenumber', verifySecurityToken, async (req, res) => {
   try {
     const visitorToken = req.query.visitorToken; // Retrieve the visitorToken from query parameters
 
@@ -573,6 +573,42 @@ function verifyAdminToken(req, res, next) {
 
     // Check if the decoded token has the admin role
     if (decoded.role === 'admin') {
+      next(); // Allow access to the route
+    } else {
+      return res.status(403).send('Forbidden: Insufficient privileges');
+    }
+  });
+}
+
+// Function to generate a security token
+function generateSecurityToken(securityData) {
+  const securityToken = jwt.sign(
+    {
+      ...securityData,
+      role: 'security' // Include the security role in the token payload
+    },
+    'securitySecretPassword', // Use a secure, environment-specific password for security tokens
+    { expiresIn: '1d' } // Set an appropriate expiration time for the security token
+  );
+
+  return securityToken;
+}
+
+// Middleware to verify security tokens
+function verifySecurityToken(req, res, next) {
+  let header = req.headers.authorization;
+  if (!header) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  let token = header.split(' ')[1];
+  jwt.verify(token, 'securitySecretPassword', (err, decoded) => {
+    if (err) {
+      return res.status(401).send('Unauthorized');
+    }
+
+    // Check if the decoded token has the security role
+    if (decoded.role === 'security') {
       next(); // Allow access to the route
     } else {
       return res.status(403).send('Forbidden: Insufficient privileges');
