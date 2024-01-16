@@ -293,25 +293,20 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     const user = await client.db('benr2423').collection('users').findOne({
       'visitors.visitorToken': visitorToken
     }, {
-      projection: { 'username': 1, 'phonenumber': 1, 'visitors.$': 1, _id: 0 }
+      projection: { 'username': 1, 'phonenumber': 1, _id: 0 }
     });
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found for the provided visitor token.' });
     }
 
-    // Extract the visitor details
-    const visitor = user.visitors[0];
+    // Extract the user's phone number
     const username = user.username;
-    const visitorname = visitor.visitorname;
-    const checkintime = visitor.checkintime;
     const phonenumber = user.phonenumber;
 
     res.json({
       success: true,
       username: username,
-      visitorname: visitorname,
-      checkintime: checkintime,
       phonenumber: phonenumber
     });
 
@@ -327,6 +322,7 @@ app.get('/get/userphonenumber', verifyToken, async (req, res) => {
     }
   }
 });
+
 
     if (!user) {
       // If no user is found with that visitorToken, respond accordingly.
