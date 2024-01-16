@@ -330,8 +330,8 @@
  * @swagger
  * /get/userphonenumber:
  *   get:
- *     summary: Retrieve the user's phone number using visitor token
- *     description: Allows security personnel to retrieve the user's phone number associated with a given visitor token. The visitor token must be provided as a query parameter.
+ *     summary: Retrieve the visitor's destination using visitor token
+ *     description: Allows security personnel to retrieve the detail of the user associated with a given visitor token. The visitor token must be provided as a query parameter.
  *     tags:
  *       - Security
  *     security:
@@ -342,10 +342,10 @@
  *         required: true
  *         schema:
  *           type: string
- *         description: Visitor token to identify the user's phone number.
+ *         description: Visitor token to identify the visitor's destination user.
  *     responses:
  *       '200':
- *         description: Successfully retrieved the user's phone number associated with the visitor token.
+ *         description: Successfully retrieved the user associated with the visitor token.
  *         content:
  *           application/json:
  *             schema:
@@ -359,7 +359,7 @@
  *                   example: johndoe
  *                 phonenumber:
  *                   type: string
- *                   example: +1234567890
+ *                   example: +601234578
  *       '400':
  *         description: Bad request. Visitor token is missing.
  *       '401':
@@ -369,7 +369,6 @@
  *       '500':
  *         description: Internal Server Error.
  */
-
 /**
  * @swagger
  * /delete/visitor:
