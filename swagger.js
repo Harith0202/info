@@ -164,7 +164,7 @@
  * @swagger
  * /view/user/admin:
  *   get:
- *     summary: View all user (security)
+ *     summary: View all user (admin)
  *     tags: [administrator]
  *     security:
  *       - BearerAuth: []
@@ -332,7 +332,8 @@
  *   get:
  *     summary: Retrieve user's phone number and visitor's check-in time using visitor token
  *     description: Allows retrieval of the phone number of the user associated with a given visitor token, along with the visitor's check-in time. The visitor token must be provided as a query parameter.
- *     tags: [Security]
+ *     tags: 
+ *       - Security
  *     security:
  *       - BearerAuth: []
  *     parameters:
