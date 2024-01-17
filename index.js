@@ -345,48 +345,27 @@ app.listen(port, () => {
 });
 
 async function login(reqUsername, reqPassword) {
-  try {
-    let matchUser = await client.db('benr2423').collection('security').findOne({ username: { $eq: reqUsername } });
+  let matchUser = await client.db('benr2423').collection('security').findOne({ username: { $eq: reqUsername } });
 
-    if (!matchUser) {
-      return { message: "User not found!" };
-    }
+  if (!matchUser)
+    return { message: "User not found!" };
 
-    // Compare the provided password with the hashed password in the database
-    const isPasswordMatch = await bcrypt.compare(reqPassword, matchUser.password);
-
-    if (isPasswordMatch) {
-      return { message: "Correct password", user: matchUser };
-    } else {
-      return { message: "Invalid password" };
-    }
-  } catch (error) {
-    console.error(error);
-    return { message: "Internal Server Error" };
-  }
+  if (matchUser.password === reqPassword)
+    return { message: "Correct password", user: matchUser };
+  else
+    return { message: "Invalid password" };
 }
 
-
 async function loginadmin(reqUsername, reqPassword) {
-  try {
-    let matchUser = await client.db('benr2423').collection('administrator').findOne({ username: { $eq: reqUsername } });
+  let matchUser = await client.db('benr2423').collection('administrator').findOne({ username: { $eq: reqUsername } });
 
-    if (!matchUser) {
-      return { message: "User not found!" };
-    }
+  if (!matchUser)
+    return { message: "User not found!" };
 
-    // Compare the provided password with the hashed password in the database
-    const isPasswordMatch = await bcrypt.compare(reqPassword, matchUser.password);
-
-    if (isPasswordMatch) {
-      return { message: "Correct password", user: matchUser };
-    } else {
-      return { message: "Invalid password" };
-    }
-  } catch (error) {
-    console.error(error);
-    return { message: "Internal Server Error" };
-  }
+  if (matchUser.password === reqPassword)
+    return { message: "Correct password", user: matchUser };
+  else
+    return { message: "Invalid password" };
 }
 
 async function loginuser(reqUsername, reqPassword) {
