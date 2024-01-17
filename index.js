@@ -4,6 +4,7 @@ const app = express();
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const port = process.env.PORT || 3000;
+const bcrypt = require('bcrypt');
 
 
 const MongoURI = process.env.MONGODB_URI;
@@ -344,39 +345,70 @@ app.listen(port, () => {
 });
 
 async function login(reqUsername, reqPassword) {
-  let matchUser = await client.db('benr2423').collection('security').findOne({ username: { $eq: reqUsername } });
+  try {
+    let matchUser = await client.db('benr2423').collection('security').findOne({ username: { $eq: reqUsername } });
 
-  if (!matchUser)
-    return { message: "User not found!" };
+    if (!matchUser) {
+      return { message: "User not found!" };
+    }
 
-  if (matchUser.password === reqPassword)
-    return { message: "Correct password", user: matchUser };
-  else
-    return { message: "Invalid password" };
+    // Compare the provided password with the hashed password in the database
+    const isPasswordMatch = await bcrypt.compare(reqPassword, matchUser.password);
+
+    if (isPasswordMatch) {
+      return { message: "Correct password", user: matchUser };
+    } else {
+      return { message: "Invalid password" };
+    }
+  } catch (error) {
+    console.error(error);
+    return { message: "Internal Server Error" };
+  }
 }
 
+
 async function loginadmin(reqUsername, reqPassword) {
-  let matchUser = await client.db('benr2423').collection('administrator').findOne({ username: { $eq: reqUsername } });
+  try {
+    let matchUser = await client.db('benr2423').collection('administrator').findOne({ username: { $eq: reqUsername } });
 
-  if (!matchUser)
-    return { message: "User not found!" };
+    if (!matchUser) {
+      return { message: "User not found!" };
+    }
 
-  if (matchUser.password === reqPassword)
-    return { message: "Correct password", user: matchUser };
-  else
-    return { message: "Invalid password" };
+    // Compare the provided password with the hashed password in the database
+    const isPasswordMatch = await bcrypt.compare(reqPassword, matchUser.password);
+
+    if (isPasswordMatch) {
+      return { message: "Correct password", user: matchUser };
+    } else {
+      return { message: "Invalid password" };
+    }
+  } catch (error) {
+    console.error(error);
+    return { message: "Internal Server Error" };
+  }
 }
 
 async function loginuser(reqUsername, reqPassword) {
-  let matchUser = await client.db('benr2423').collection('users').findOne({ username: { $eq: reqUsername } });
+  try {
+    let matchUser = await client.db('benr2423').collection('users').findOne({ username: { $eq: reqUsername } });
 
-  if (!matchUser)
-    return { message: "User not found!" };
+    if (!matchUser) {
+      return { message: "User not found!" };
+    }
 
-  if (matchUser.password === reqPassword)
-    return { message: "Correct password", user: matchUser };
-  else
-    return { message: "Invalid password" };
+    // Compare the provided password with the hashed password in the database
+    const isPasswordMatch = await bcrypt.compare(reqPassword, matchUser.password);
+
+    if (isPasswordMatch) {
+      return { message: "Correct password", user: matchUser };
+    } else {
+      return { message: "Invalid password" };
+    }
+  } catch (error) {
+    console.error(error);
+    return { message: "Internal Server Error" };
+  }
 }
 
 // Update the register function to accept a single userData object
@@ -394,6 +426,12 @@ async function register(userData) {
       throw new Error('Password must contain at least one number, one lowercase, one uppercase letter, and one special symbol.');
     }
 
+    // Hash the password before storing it
+    const hashedPassword = await bcrypt.hash(userData.password, 10); // 10 is the salt rounds
+
+    // Replace the plain password with the hashed password
+    userData.password = hashedPassword;
+
     // Check if the username is already taken
     const existingUser = await client.db('benr2423').collection('users').findOne({ username: userData.username });
     if (existingUser) {
@@ -413,8 +451,9 @@ async function register(userData) {
   } catch (error) {
     // Return detailed error message in case of any issues
     return { success: false, message: error.message };
+  }
 }
-}
+
 
 // Update the register function to accept a single userData object
 async function registertest(userData) {
@@ -431,11 +470,18 @@ async function registertest(userData) {
       throw new Error('Password must contain at least one number, one lowercase, one uppercase letter, and one special symbol.');
     }
 
+    // Hash the password before storing it
+    const hashedPassword = await bcrypt.hash(userData.password, 10); // 10 is the salt rounds
+
+    // Replace the plain password with the hashed password
+    userData.password = hashedPassword;
+
     // Check if the username is already taken
     const existingUser = await client.db('benr2423').collection('users').findOne({ username: userData.username });
     if (existingUser) {
       throw new Error('Username is already taken. Please choose a different username.');
     }
+
     // Insert the user data into the database
     const result = await client.db('benr2423').collection('users').insertOne(userData);
 
@@ -449,7 +495,7 @@ async function registertest(userData) {
   } catch (error) {
     // Return detailed error message in case of any issues
     return { success: false, message: error.message };
-}
+  }
 }
 
 
