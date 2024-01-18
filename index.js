@@ -1,13 +1,10 @@
 const express = require('express');
 const app = express();
-const fs = require('fs'); // Required for reading certificate files
 
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const rateLimit = require('express-rate-limit');
 const port = process.env.PORT || 3000;
+const bcrypt = require('bcrypt');
 
 
 const MongoURI = process.env.MONGODB_URI;
@@ -59,22 +56,24 @@ const swaggerSpec = swaggerJsdoc(options);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-const certPath = "./X509-cert-8157188097184370966.pem";
-
+//connect to mongo
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = 'mongodb+srv://cluster0.qpxndud.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority';
-
-const client = new MongoClient(uri, {
-  tls: true,
-  tlsCertificateKeyFile: certPath,
-  serverApi: ServerApiVersion.v1
+const credentials = './X509-cert-8157188097184370966.pem';
+const client = new MongoClient('mongodb+srv://cluster0.qpxndud.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority',{
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+  tlsCertificateKeyFile: credentials
 });
 
+client.connect().then(res => {
+  console.log(res);
+});
 
-client.connect().then(() => {
-  console.log('Connected to MongoDB with X.509 authentication');
-}).catch(err => {
-  console.error('Error connecting to MongoDB:', err);
+client.connect().then(res => {
+  console.log(res);
 });
 
 app.use(express.json());
@@ -347,7 +346,7 @@ app.get('/get/userphonenumber', verifySecurityToken, async (req, res) => {
 
 
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  console.log(`Example app listening on port ${port}`);
 });
 
 async function login(reqUsername, reqPassword) {
