@@ -5,7 +5,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const port = process.env.PORT || 3000;
 const bcrypt = require('bcrypt');
-
+const { body, validationResult } = require('express-validator');
 
 const MongoURI = process.env.MONGODB_URI;
 
@@ -176,16 +176,18 @@ app.get('/view/user/admin', verifyAdminToken, async (req, res) => {
   }
 });
 
-//user login account 
-app.post('/login/user', loginLimiter, async (req, res) => {
-  // Validate the username and password fields
-  if (!req.body.username || !req.body.password) {
-    return res.status(400).json({ success: false, message: "Username and password are required." });
+app.post('/login/user', loginLimiter, [
+  body('username').trim().isLength({ min: 3 }).withMessage('Username must be at least 3 characters long'),
+  body('password').trim().isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+], async (req, res) => {
+  // Check for validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
   }
 
+  // Continue with login logic
   console.log(req.body);
-
-  // Call the loginuser function after input validation
   loginuser(req.body.username, req.body.password)
     .then(result => {
       if (result.message === 'Correct password') {
