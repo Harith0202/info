@@ -177,8 +177,8 @@ app.get('/view/user/admin', verifyAdminToken, async (req, res) => {
 });
 
 app.post('/login/user', loginLimiter, [
-  body('username').trim().isLength({ min: 3 }).withMessage('Username must be at least 3 characters long'),
-  body('password').trim().isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+  body('username').trim().isLength({ min: 4 }).withMessage('Username must be at least 4 characters long'),
+  body('password').trim().isLength({ min: 4 }).withMessage('Password must be at least 4 characters long'),
 ], async (req, res) => {
   // Check for validation errors
   const errors = validationResult(req);
