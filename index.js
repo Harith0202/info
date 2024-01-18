@@ -59,7 +59,7 @@ const swaggerSpec = swaggerJsdoc(options);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-const certPath = "./X509-cert-7649406194260703593.pem";
+const certPath = "./harithcert.pem";
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = 'mongodb+srv://cluster0.qpxndud.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority';
