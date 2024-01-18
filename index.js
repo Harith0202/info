@@ -59,7 +59,7 @@ const swaggerSpec = swaggerJsdoc(options);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-const certPath = "C:\Users\harit\OneDrive - Universiti Teknikal Malaysia Melaka\Desktop\X509-cert-7649406194260703593.pem";
+const certPath = "C:\\Users\\harit\\OneDrive - Universiti Teknikal Malaysia Melaka\\Desktop\\X509-cert-7649406194260703593.pem";
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = 'mongodb+srv://cluster0.qpxndud.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority';
@@ -69,6 +69,7 @@ const client = new MongoClient(uri, {
   tlsCertificateKeyFile: certPath,
   serverApi: ServerApiVersion.v1
 });
+
 
 client.connect().then(() => {
   console.log('Connected to MongoDB with X.509 authentication');
