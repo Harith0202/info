@@ -5,9 +5,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const port = process.env.PORT || 3000;
 const bcrypt = require('bcrypt');
-
-
-const MongoURI = process.env.MONGODB_URI;
+const fs = require('fs'); // Required for reading certificate files
 
 const rateLimit = require('express-rate-limit');
 
@@ -19,7 +17,6 @@ const loginLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: 'Too many login attempts from this IP, please try again after 30 seconds'
 });
-
 
 // Swagger JSDoc options
 const options = {
@@ -57,18 +54,22 @@ const swaggerSpec = swaggerJsdoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://harithrosly123:Harith123@cluster0.cfe5zxw.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://harithrosly123:Harith123@cluster0.cfe5zxw.mongodb.net/";
+const ca = [fs.readFileSync('C:\\Users\\harit\\OneDrive - Universiti Teknikal Malaysia Melaka\\Desktop\\X509-cert-5456220889526332016.pem')]; // Inserted certificate path
 
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
+  sslCA: ca, // Specify the SSL certificate authority
 });
 
 client.connect().then(res => {
-  console.log(res);
+  console.log('MongoDB connection successful:', res);
+}).catch(err => {
+  console.error('MongoDB connection error:', err);
 });
 
 app.use(express.json());
