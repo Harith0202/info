@@ -177,8 +177,15 @@ app.get('/view/user/admin', verifyAdminToken, async (req, res) => {
 });
 
 //user login account 
-app.post('/login/user', loginLimiter, (req, res) => {
+app.post('/login/user', loginLimiter, async (req, res) => {
+  // Validate the username and password fields
+  if (!req.body.username || !req.body.password) {
+    return res.status(400).json({ success: false, message: "Username and password are required." });
+  }
+
   console.log(req.body);
+
+  // Call the loginuser function after input validation
   loginuser(req.body.username, req.body.password)
     .then(result => {
       if (result.message === 'Correct password') {
