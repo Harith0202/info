@@ -57,7 +57,7 @@ const swaggerSpec = swaggerJsdoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://harithrosly:harith123@cluster0.qpxndud.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://harithrosly:harith123@cluster0.qpxndud.mongodb.net/";
 
 const client = new MongoClient(uri, {
   serverApi: {
